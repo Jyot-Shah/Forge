@@ -22,17 +22,47 @@ function buildStorageKey(originalFilename) {
 
 export async function createDocument(projectId, uploadedBy, file) {
   if (!file) throw new AppError(400, "FILE_REQUIRED", "A file is required.");
-  const supported = new Set([
+  const extension = path.extname(file.originalname).toLowerCase();
+  const supportedExtensions = new Set([
+    ".txt",
+    ".md",
+    ".markdown",
+    ".json",
+    ".py",
+    ".js",
+    ".ts",
+    ".jsx",
+    ".tsx",
+    ".html",
+    ".css",
+    ".yaml",
+    ".yml",
+    ".csv",
+  ]);
+  const supportedMimeTypes = new Set([
     "text/plain",
     "text/markdown",
+    "text/x-markdown",
     "application/json",
+    "text/json",
+    "text/javascript",
+    "application/javascript",
+    "text/x-python",
+    "text/css",
+    "text/html",
+    "application/octet-stream",
   ]);
-  if (!supported.has(file.mimetype))
+
+  if (
+    !supportedExtensions.has(extension) &&
+    !supportedMimeTypes.has(file.mimetype)
+  ) {
     throw new AppError(
       400,
       "UNSUPPORTED_FILE_TYPE",
-      "Only TXT, Markdown, and JSON files are supported currently.",
+      "Only text, Markdown, JSON, code, and configuration files are supported.",
     );
+  }
 
   const storageKey = buildStorageKey(file.originalname);
   const storagePath = path.join(uploadRoot, storageKey);
@@ -102,6 +132,12 @@ export async function reprocessDocument(projectId, documentId) {
     throw new AppError(404, "DOCUMENT_NOT_FOUND", "Document not found.");
 
   const version = await DocumentVersion.findById(document.latestVersionId);
+  if (!version)
+    throw new AppError(
+      404,
+      "VERSION_NOT_FOUND",
+      "Document version not found. The document may be corrupted.",
+    );
   document.status = "pending";
   document.error = undefined;
   version.ingestionStatus = "pending";

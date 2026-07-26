@@ -19,9 +19,6 @@ function normalizeVector(values) {
   return values.map((value) => value / magnitude);
 }
 
-function usesEmbedding2(model) {
-  return model.startsWith("gemini-embedding-2");
-}
 
 function buildEmbeddingPrompt(text, purpose) {
   return purpose === "document"

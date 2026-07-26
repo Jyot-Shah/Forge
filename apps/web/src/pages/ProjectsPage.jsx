@@ -110,7 +110,7 @@ export default function ProjectsPage() {
               <ul className="space-y-3 font-body-sm text-on-surface-variant">
                 <li className="flex items-center justify-between py-1.5 border-b border-outline-variant/30">
                   <span>Storage Engine</span>
-                  <span className="font-mono-code text-primary">PostgreSQL / S3</span>
+                  <span className="font-mono-code text-primary">MongoDB / FS</span>
                 </li>
                 <li className="flex items-center justify-between py-1.5 border-b border-outline-variant/30">
                   <span>Search Pipeline</span>

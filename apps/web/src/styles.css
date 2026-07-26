@@ -50,6 +50,9 @@
   --color-on-surface: #e5e1e4;
   --color-background: #131315;
 
+  --color-warning: #fbbf24;
+  --color-success: #34d399;
+
   --radius-DEFAULT: 0.125rem;
   --radius-lg: 0.25rem;
   --radius-xl: 0.5rem;
@@ -292,4 +295,11 @@ body {
 .scrollbar-thin::-webkit-scrollbar-thumb {
   border-radius: 9999px;
   background: #27272a;
+}
+
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 24px 24px;
 }

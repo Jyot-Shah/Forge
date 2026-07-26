@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { api, setAccessToken } from "../api/client.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import ForgeLogo from "../components/ForgeLogo.jsx";
 
 export default function LoginPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { login } = useAuth();
 
   async function submit(event) {
     event.preventDefault();
@@ -15,12 +16,7 @@ export default function LoginPage() {
     const form = new FormData(event.currentTarget);
 
     try {
-      const { data } = await api.post("/auth/login", {
-        email: form.get("email"),
-        password: form.get("password"),
-      });
-
-      setAccessToken(data.accessToken);
+      await login(form.get("email"), form.get("password"));
       queryClient.clear();
       navigate("/projects");
     } catch (requestError) {

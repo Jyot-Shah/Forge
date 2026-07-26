@@ -20,6 +20,7 @@ export default function ChatPage() {
   const [text, setText] = useState("");
   const [error, setError] = useState("");
   const endRef = useRef(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const conversations = useQuery({
     queryKey: ["conversations", projectId],
@@ -89,11 +90,17 @@ export default function ChatPage() {
   return (
     <section className="flex h-full bg-surface border border-outline-variant rounded-DEFAULT overflow-hidden">
       {/* Sidebar: Conversation History */}
-      <div className="w-72 border-r border-outline-variant bg-surface-container-lowest flex flex-col shrink-0">
-        <div className="h-12 border-b border-outline-variant flex items-center px-4 shrink-0 bg-surface-container-low">
+      <div className={`${sidebarOpen ? "fixed inset-0 z-30 md:static md:z-auto" : "hidden md:flex"} w-72 border-r border-outline-variant bg-surface-container-lowest flex-col shrink-0 md:flex`}>
+        <div className="h-12 border-b border-outline-variant flex items-center px-4 shrink-0 bg-surface-container-low justify-between">
           <h2 className="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest">
             Chat Sessions
           </h2>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="md:hidden text-on-surface-variant hover:text-primary p-1"
+          >
+            <span className="material-symbols-outlined text-[18px]">close</span>
+          </button>
         </div>
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-2 space-y-1">
           <button
@@ -142,10 +149,18 @@ export default function ChatPage() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface bg-grid-pattern">
         <header className="h-12 border-b border-outline-variant bg-surface-container/80 flex items-center px-4 justify-between shrink-0 backdrop-blur-md">
-          <div className="font-mono-code text-[13px] text-primary truncate">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="md:hidden text-on-surface-variant hover:text-primary p-1"
+            >
+              <span className="material-symbols-outlined text-[18px]">menu</span>
+            </button>
+            <div className="font-mono-code text-[13px] text-primary truncate">
             {conversationId
               ? activeConversation?.title || "Active session"
               : "Initialize connection to query source context..."}
+            </div>
           </div>
           <span className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
@@ -219,6 +234,23 @@ export default function ChatPage() {
                 Initialize query sequence. The Forge AI model has full lexical and semantic access to your project documents and contextual memory index.
               </p>
             </div>
+          )}
+
+          {send.isPending && (
+            <article className="flex w-full justify-start">
+              <div className="flex flex-col gap-1 max-w-[85%] md:max-w-[75%]">
+                <div className="flex items-center gap-2 px-1 justify-start">
+                  <span className="font-mono-label text-[10px] uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[12px] animate-spin">smart_toy</span>
+                    Forge AI
+                  </span>
+                </div>
+                <div className="rounded-sm p-4 text-[13px] leading-relaxed bg-surface-container border border-outline-variant text-on-surface-variant font-mono-code flex items-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+                  Analyzing project knowledge base and generating grounded response...
+                </div>
+              </div>
+            </article>
           )}
           <div ref={endRef} />
         </div>

@@ -25,7 +25,7 @@ export default function ProjectDashboardPage() {
         <div>
           <h2 className="font-headline-xl text-headline-xl text-primary tracking-tighter">System Overview</h2>
           <p className="font-mono-label text-mono-label text-on-surface-variant mt-2 uppercase tracking-widest">
-            Environment: Production | Region: US-East
+            Real-time project telemetry and resource utilization
           </p>
         </div>
         <div className="flex items-center gap-3">

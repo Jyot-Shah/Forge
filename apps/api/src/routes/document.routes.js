@@ -1,5 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   requireProjectEditor,
   authorizeProject,
@@ -13,8 +15,12 @@ import {
 } from "../services/document.service.js";
 import { environment } from "../config/environment.js";
 const router = Router({ mergeParams: true });
+const uploadTmpDir = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../../../uploads/tmp",
+);
 const upload = multer({
-  dest: "uploads/tmp",
+  dest: uploadTmpDir,
   limits: { fileSize: environment.MAX_UPLOAD_BYTES, files: 1 },
 });
 router.get("/", authorizeProject(), async (req, res, next) => {

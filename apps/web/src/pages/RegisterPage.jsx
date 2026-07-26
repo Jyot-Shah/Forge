@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api, setAccessToken } from "../api/client.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import ForgeLogo from "../components/ForgeLogo.jsx";
 
 export default function RegisterPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   async function submit(event) {
     event.preventDefault();
@@ -13,13 +14,11 @@ export default function RegisterPage() {
     const form = new FormData(event.currentTarget);
 
     try {
-      const { data } = await api.post("/auth/register", {
-        displayName: form.get("displayName"),
-        email: form.get("email"),
-        password: form.get("password"),
-      });
-
-      setAccessToken(data.accessToken);
+      await register(
+        form.get("displayName"),
+        form.get("email"),
+        form.get("password"),
+      );
       navigate("/projects");
     } catch (requestError) {
       setError(

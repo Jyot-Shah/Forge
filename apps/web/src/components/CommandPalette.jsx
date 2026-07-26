@@ -1,26 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const { projectId } = useParams();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setOpen((prev) => !prev);
-      } else if (e.key === "Escape") {
-        setOpen(false);
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  if (!open) return null;
+  const listRef = useRef(null);
 
   const actions = [
     {
@@ -66,14 +53,61 @@ export default function CommandPalette() {
     a.label.toLowerCase().includes(search.toLowerCase()),
   );
 
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [search]);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setOpen((prev) => !prev);
+        setSearch("");
+        setSelectedIndex(0);
+      } else if (e.key === "Escape") {
+        setOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   function execute(path) {
     setOpen(false);
     setSearch("");
+    setSelectedIndex(0);
     navigate(path);
   }
 
+  function handleListKeyDown(e) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedIndex((prev) => Math.min(prev + 1, filtered.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex((prev) => Math.max(prev - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (filtered[selectedIndex]) {
+        execute(filtered[selectedIndex].path);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (open && listRef.current) {
+      const selected = listRef.current.querySelector(`[data-index="${selectedIndex}"]`);
+      if (selected) selected.scrollIntoView({ block: "nearest" });
+    }
+  }, [selectedIndex, open]);
+
+  if (!open) return null;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-background/80 backdrop-blur-sm p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-background/80 backdrop-blur-sm p-4"
+      onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
+    >
       <div className="w-full max-w-xl level-1 rounded-DEFAULT border border-outline-variant shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-100">
         {/* Input */}
         <div className="flex items-center px-4 py-3 border-b border-outline-variant bg-surface-container-lowest">
@@ -84,6 +118,7 @@ export default function CommandPalette() {
             placeholder="Type a command or search workspace... (ESC to close)"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={handleListKeyDown}
             autoFocus
           />
           <kbd className="hidden sm:inline-block px-1.5 py-0.5 level-2 rounded font-mono-label text-[10px] text-on-surface-variant border border-outline-variant">
@@ -92,16 +127,21 @@ export default function CommandPalette() {
         </div>
 
         {/* List */}
-        <div className="max-h-80 overflow-y-auto p-2 space-y-1 divide-y divide-outline-variant/30">
+        <div ref={listRef} className="max-h-80 overflow-y-auto p-2 space-y-1 divide-y divide-outline-variant/30">
           {filtered.length ? (
-            filtered.map((action) => (
+            filtered.map((action, index) => (
               <button
                 key={action.id}
+                data-index={index}
                 onClick={() => execute(action.path)}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded hover:bg-surface-container-highest transition text-left group"
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded transition text-left group ${
+                  index === selectedIndex
+                    ? "bg-surface-container-highest text-primary"
+                    : "hover:bg-surface-container-highest"
+                }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary">
+                  <span className={`material-symbols-outlined text-[18px] ${index === selectedIndex ? "text-primary" : "text-on-surface-variant group-hover:text-primary"}`}>
                     {action.icon}
                   </span>
                   <span className="font-mono-label text-mono-label text-primary">
@@ -123,7 +163,7 @@ export default function CommandPalette() {
         {/* Footer */}
         <div className="px-4 py-2 border-t border-outline-variant/40 bg-surface-container-low flex items-center justify-between font-mono-label text-[10px] text-on-surface-variant">
           <span>Navigation Shortcuts</span>
-          <span>Press ↑↓ to navigate, ENTER to select</span>
+          <span>↑↓ navigate · ENTER select · ESC close</span>
         </div>
       </div>
     </div>

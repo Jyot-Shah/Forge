@@ -76,8 +76,11 @@ export async function ask(projectId, userId, conversationId, content) {
     );
   }
 
-  const next =
-    (await Message.countDocuments({ conversationId: conversation.id })) + 1;
+  const latest = await Message.findOne({ conversationId: conversation.id })
+    .sort({ sequenceNumber: -1 })
+    .select("sequenceNumber")
+    .lean();
+  const next = (latest?.sequenceNumber ?? 0) + 1;
   await Message.create({
     projectId,
     conversationId: conversation.id,

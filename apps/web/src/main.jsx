@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import App from "./App.jsx";
 import ProjectsPage from "./pages/ProjectsPage.jsx";
 import ProjectWorkspacePage from "./pages/ProjectWorkspacePage.jsx";
@@ -31,6 +31,7 @@ createRoot(document.getElementById("root")).render(
         <BrowserRouter>
           <Routes>
             <Route element={<App />}>
+              <Route path="/" element={<Navigate to="/projects" replace />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route

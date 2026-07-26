@@ -1,4 +1,5 @@
 import { PROJECT_ROLES } from "@forge/shared/constants";
+import mongoose from "mongoose";
 import { AppError } from "../errors/app-error.js";
 import { ProjectMembership } from "../models/project-membership.model.js";
 import { Project } from "../models/project.model.js";
@@ -61,21 +62,22 @@ export async function deleteProject(projectId) {
 }
 
 export async function getProjectStats(projectId) {
+  const objectId = new mongoose.Types.ObjectId(projectId);
   const [documentCount, conversationCount, memoryCount, chunkCount, byteStats] =
     await Promise.all([
-      SourceDocument.countDocuments({ projectId, status: "active" }),
+      SourceDocument.countDocuments({ projectId, deletedAt: null }),
       Conversation.countDocuments({ projectId }),
       Memory.countDocuments({ projectId, status: "active" }),
-      DocumentChunk.countDocuments({ projectId, status: "active" }),
+      DocumentChunk.countDocuments({ projectId }),
       SourceDocument.aggregate([
-        { $match: { projectId, status: "active" } },
+        { $match: { projectId: objectId, deletedAt: null } },
         { $group: { _id: null, totalBytes: { $sum: "$byteSize" } } },
       ]),
     ]);
 
   const latestDocuments = await SourceDocument.find({
     projectId,
-    status: "active",
+    deletedAt: null,
   })
     .sort({ createdAt: -1 })
     .limit(3)

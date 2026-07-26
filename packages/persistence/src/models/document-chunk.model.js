@@ -13,6 +13,7 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false },
 );
+schema.index({ projectId: 1, documentId: 1 });
 schema.index({ documentVersionId: 1, chunkIndex: 1 }, { unique: true });
 schema.index({ content: "text" });
 export const DocumentChunk = mongoose.model("DocumentChunk", schema);

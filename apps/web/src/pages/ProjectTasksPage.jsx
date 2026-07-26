@@ -191,7 +191,7 @@ export default function ProjectTasksPage() {
                   <div key={task._id} className="flex items-center px-4 py-3 group bg-surface-container-lowest">
                     {/* Reopen Checkbox */}
                     <button
-                      onClick={() => update.mutate({ taskId: task._id, updates: { status: "pending" } })}
+                      onClick={() => update.mutate({ taskId: task._id, updates: { status: "open" } })}
                       className="w-6 h-6 shrink-0 border border-success bg-success/20 text-success rounded-sm flex items-center justify-center transition-colors hover:bg-success/30 mr-4"
                       title="Reopen Task"
                     >

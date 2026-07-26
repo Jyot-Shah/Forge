@@ -8,6 +8,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "npm run build --workspace=@forge/web",
     "dev:api": "npm run dev --workspace=@forge/api",
     "dev:web": "npm run dev --workspace=@forge/web",
     "dev:worker": "npm run dev --workspace=@forge/worker",
