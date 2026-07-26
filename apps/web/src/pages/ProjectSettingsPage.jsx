@@ -49,20 +49,33 @@ export default function ProjectSettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <form
-        onSubmit={handleSubmit}
-        className="surface flex flex-col gap-6 rounded-2xl p-6"
-      >
+    <div className="max-w-3xl space-y-6">
+      {/* Top Toolbar */}
+      <header className="pb-4 border-b border-outline-variant flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-white">Project Settings</h2>
-          <p className="mt-1 text-sm text-slate-400">
-            Update configuration for {project.name}.
+          <h2 className="font-headline-xl text-headline-xl text-primary tracking-tighter">Project Settings</h2>
+          <p className="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest mt-1">
+            Workspace Configuration & Access Control
           </p>
         </div>
-        <div className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-slate-300">Name</span>
+      </header>
+
+      <form
+        onSubmit={handleSubmit}
+        className="level-1 p-6 md:p-8 rounded-DEFAULT border border-outline-variant space-y-6"
+      >
+        <div>
+          <h3 className="font-headline-lg text-headline-lg font-semibold text-primary mb-1">General Properties</h3>
+          <p className="font-body-sm text-body-sm text-on-surface-variant">
+            Update workspace identity and description metadata.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider mb-1">
+              Project Name
+            </label>
             <input
               type="text"
               className="forge-input"
@@ -70,53 +83,62 @@ export default function ProjectSettingsPage() {
               onChange={(e) => setName(e.target.value)}
               required
             />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-slate-300">
-              Description
-            </span>
+          </div>
+
+          <div>
+            <label className="block font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider mb-1">
+              Project Description
+            </label>
             <textarea
-              className="forge-textarea min-h-24"
+              className="forge-textarea min-h-[6rem]"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What is this project about?"
+              placeholder="Architectural overview and technical scope..."
             />
-          </label>
+          </div>
         </div>
-        <div className="border-t border-white/5 pt-4 flex items-center justify-between">
-          {error ? <p className="text-sm text-rose-400">{error}</p> : <div />}
+
+        {error ? (
+          <div className="p-3 level-2 rounded-DEFAULT border border-error-container text-error text-body-sm font-mono-code">
+            {error}
+          </div>
+        ) : null}
+
+        <div className="pt-4 border-t border-outline-variant/40 flex items-center justify-between">
+          <span className="font-mono-code text-[11px] text-on-surface-variant">
+            Project ID: <span className="text-primary">{project._id}</span>
+          </span>
           <button
             disabled={update.isPending}
             type="submit"
             className="forge-button px-6 py-2"
           >
-            {update.isPending ? "Saving..." : "Save Changes"}
+            {update.isPending ? "Saving..." : "Save Settings"}
           </button>
         </div>
       </form>
 
-      <div className="surface rounded-2xl p-6 border border-rose-900/30">
-        <h3 className="text-lg font-semibold text-rose-400">Danger Zone</h3>
-        <p className="mt-1 text-sm text-slate-400">
-          Permanently delete this project and all of its memories, files, and
-          chats. This action cannot be undone.
+      {/* Danger Zone */}
+      <div className="level-1 p-6 md:p-8 rounded-DEFAULT border border-error-container/60 bg-surface-container-lowest">
+        <h3 className="font-headline-lg text-headline-lg font-semibold text-error mb-1">Danger Zone</h3>
+        <p className="font-body-sm text-body-sm text-on-surface-variant mb-6">
+          Permanently drop this project container along with all associated indexed document chunks, Qdrant vectors, memory graph facts, and historical conversations.
         </p>
-        <div className="mt-4">
-          <button
-            onClick={() => {
-              if (
-                window.confirm(
-                  "Are you absolutely sure you want to delete this project?",
-                )
+
+        <button
+          onClick={() => {
+            if (
+              window.confirm(
+                `Permanently delete project workspace '${project.name}' and all indexed knowledge?`,
               )
-                destroy.mutate();
-            }}
-            disabled={destroy.isPending}
-            className="rounded-xl bg-rose-500/10 px-6 py-2 text-sm font-semibold text-rose-400 transition hover:bg-rose-500/20"
-          >
-            {destroy.isPending ? "Deleting..." : "Delete Project"}
-          </button>
-        </div>
+            )
+              destroy.mutate();
+          }}
+          disabled={destroy.isPending}
+          className="ghost-button border-error text-error hover:bg-error-container/20 px-6 py-2"
+        >
+          {destroy.isPending ? "Deleting Workspace..." : "Delete Project Workspace"}
+        </button>
       </div>
     </div>
   );
