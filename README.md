@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ FORGE
+# FORGE
 
 **An AI-Powered Developer Workspace & Persistent Project Knowledge Engine**
 
@@ -17,102 +17,95 @@
 
 ---
 
-## 💡 What is Forge?
+## Overview
 
-**Forge** is an enterprise-grade AI developer workspace designed for software engineering teams, researchers, and technical founders. Unlike generic chatbots or basic PDF-RAG wrappers, Forge continuously builds structured, persistent knowledge about software projects across documents, conversations, architectural decisions, and extracted entity memories.
+**Forge** is a developer workspace built to continuously ingest, index, and retrieve project-scoped technical documentation, codebase specifications, and contextual memories.
 
-Every piece of context in Forge is strictly scoped to a **Project Workspace**. Over time, Forge develops a durable understanding of your codebase, technical specifications, and system design—allowing developers to query, inspect, and interact with an intelligent long-term engineering companion.
-
----
-
-## 🎨 Modern-Industrial Minimalist Interface
-
-Forge features a high-density **Modern-Industrial Minimalist UI** designed for developer ergonomics:
-
-- **Obsidian Dark Mode**: High-contrast, low-eyestrain dark palette (`#09090B` canvas, `#121214` level-1 panels, `#27272A` hairline borders).
-- **Precision Typography**: **Geist** font family for technical headlines and body copy; **JetBrains Mono** for code snippets, monospaced metadata pills, keyboard shortcuts, and telemetry logs.
-- **Tonal Layering & Hairlines**: Hairline borders replace heavy blur gradients or floating shadows for crisp, professional visual separation.
-- **High-Density Responsive Layouts**: Fluid 12-column grids on desktop with collapsible slide-over navigation drawers on mobile devices.
+Unlike standard conversational interfaces, Forge builds an evolving technical understanding of each software repository. It combines dense vector retrieval, reciprocal rank fusion (RRF), and persistent memory graph extraction to provide evidence-grounded engineering assistance.
 
 ---
 
-## 🚀 Key Features & Architectural Capabilities
+## Design System
 
-### 📁 1. Project-Scoped Knowledge Ingestion
-- Multi-format source file support (`.md`, `.txt`, `.json`, `.py`, `.js`, `.ts`).
-- Asynchronous background ingestion pipeline managed by **BullMQ** & **Redis**.
-- Real-time status lifecycle tracking (`pending` ➔ `processing` ➔ `ready` / `failed`).
+Forge features a high-density industrial interface designed for software engineering workflows:
 
-### 🧠 2. Persistent Context & Memory Engine
-- Factual extraction from document processing and developer chat interactions.
-- Entity confidence scoring, category tags, and historical timeline tracking.
-- Interactive Memory Graph interface to inspect or prune outdated project knowledge blocks.
-
-### 🔍 3. Reciprocal Rank Fusion (RRF) Hybrid Search
-- Combines **MongoDB Lexical Search** and **Qdrant Vector Cosine Retrieval**.
-- Calculates unified rank fusion scores ($k=60$) for accurate technical context retrieval.
-
-### 💬 4. Evidence-Grounded AI Chat Core
-- Context-aware RAG pipeline powered by **Google Gemini API** (`@google/genai`).
-- Real-time Markdown rendering via `react-markdown`, syntax-highlighted code snippets, and cited source document excerpts.
-- Conversation session history and prompt thread management.
-
-### ⚙️ 5. Asynchronous Worker Telemetry
-- Redis-backed BullMQ queue processor with automatic job retries, exponential backoff, and memory management.
-- Live workspace metrics detailing document counts, storage byte usage, chunk totals, and conversation counts.
+- **Obsidian Dark Mode**: High-contrast theme (`#09090B` canvas, `#121214` level-1 panels, `#27272A` hairline borders).
+- **Typography**: **Geist** for technical headlines and body copy; **JetBrains Mono** for code snippets, metadata tags, and telemetry logs.
+- **Tonal Layering**: Clean hairline borders and solid panels for structured visual separation without artificial glows.
+- **Responsive Layouts**: Fluid 12-column desktop grid with collapsible navigation drawer on mobile.
 
 ---
 
-## 🏗️ Architecture & Monorepo Structure
+## Core System Architecture
+
+### 1. Document Ingestion Pipeline
+- Supports `.md`, `.txt`, `.json`, `.py`, `.js`, `.ts` source files.
+- Asynchronous BullMQ background worker queue running on Redis.
+- Lifecycle state transitions (`pending` ➔ `processing` ➔ `ready` / `failed`).
+
+### 2. Persistent Memory Graph Engine
+- Factual extraction from document ingestion and developer chat interactions.
+- Entity confidence scoring, classification tags, and timeline tracking.
+- Memory management interface to inspect or prune outdated project knowledge blocks.
+
+### 3. Reciprocal Rank Fusion (RRF) Hybrid Search
+- Merges **MongoDB Lexical Search** and **Qdrant Vector Cosine Retrieval**.
+- Calculates unified rank fusion scores ($k=60$) for technical context matching.
+
+### 4. Grounded RAG Chat Engine
+- RAG pipeline powered by **Google Gemini API** (`@google/genai`).
+- Markdown rendering, code snippet highlighting, and cited source document excerpts.
+- Thread management and conversation session tracking.
+
+---
+
+## Repository Structure
 
 ```text
 Forge Monorepo
 ├── apps/
-│   ├── api/          # Express REST API (Auth, Projects, Docs, RAG & Search endpoints)
-│   ├── web/          # React 18 + Vite 6 + Tailwind CSS v4 Industrial Workspace UI
-│   └── worker/       # BullMQ Background Job Processor (Text Normalization & Embeddings)
+│   ├── api/          # Express REST API (Auth, Projects, Documents, RAG & Search)
+│   ├── web/          # React 18 + Vite 6 + Tailwind CSS v4 Workspace UI
+│   └── worker/       # BullMQ Background Job Processor (Text Parsing & Vector Indexing)
 ├── packages/
-│   ├── persistence/  # Shared Mongoose models & database connection routines
+│   ├── persistence/  # Shared Mongoose schemas & database connection routines
 │   └── shared/       # Shared contracts, Zod schemas, and system constants
-├── docs/             # Comprehensive technical documentation
-└── docker-compose.yml# Infrastructure setup (MongoDB 7, Redis 7, Qdrant)
+├── docs/             # Technical reference documentation
+└── docker-compose.yml# Development infrastructure (MongoDB 7, Redis 7, Qdrant)
 ```
 
 ---
 
-## 🛠️ Complete Technology Stack & Libraries
+## Technology Stack
 
 ### Frontend (`apps/web`)
-- **Framework**: React 18.3, Vite 6.0
-- **Styling**: Tailwind CSS v4.0 (`@tailwindcss/vite`), `@tailwindcss/typography`
-- **Data Fetching & State**: TanStack React Query v5.62, Axios v1.7
-- **Routing**: React Router v7.1
-- **Rendering**: React Markdown v10.1
+- React 18.3, Vite 6.0, Tailwind CSS v4.0 (`@tailwindcss/vite`), `@tailwindcss/typography`
+- TanStack React Query v5.62, Axios v1.7, React Router v7.1, React Markdown v10.1
 
-### Backend API (`apps/api`) & Worker (`apps/worker`)
-- **Server Framework**: Node.js v20+, Express v4.21
-- **Queue System**: BullMQ v5.34, ioredis v5.4
-- **Database & Vectors**: MongoDB v7.0 (via Mongoose v8.9), Qdrant Vector DB (via `@qdrant/js-client-rest` v1.13)
-- **AI Models & Embeddings**: Google Gemini API (via `@google/genai` v1.0)
-- **Security & Validation**: JWT (`jsonwebtoken` v9.0), BcryptJS v2.4, Zod v3.24, Helmet v8.0, Multer v2.0, Cookie-Parser v1.4, CORS v2.8
+### Backend API & Worker (`apps/api` & `apps/worker`)
+- Node.js v20+, Express v4.21
+- BullMQ v5.34, ioredis v5.4
+- MongoDB v7.0 (Mongoose v8.9), Qdrant Vector DB (`@qdrant/js-client-rest` v1.13)
+- Google Gemini API (`@google/genai` v1.0)
+- JWT (`jsonwebtoken` v9.0), BcryptJS v2.4, Zod v3.24, Helmet v8.0, Multer v2.0
 
 ---
 
-## ⚡ Quick Start & Local Setup
+## Local Development Setup
 
-### 1. Prerequisites
-- **Node.js**: `v20.11.0` or newer
-- **npm**: `v10.0.0` or newer
-- **Docker Desktop**: For running local infrastructure containers
+### Prerequisites
+- Node.js v20.11.0 or newer
+- npm v10.0.0 or newer
+- Docker Desktop
 
-### 2. Environment Configuration
+### 1. Environment Setup
 Copy `.env.example` to `.env` in the project root:
 
 ```bash
 cp .env.example .env
 ```
 
-Configure environment credentials in `.env`:
+Configure local credentials in `.env`:
 ```ini
 PORT=4000
 NODE_ENV=development
@@ -121,89 +114,79 @@ WEB_ORIGIN=http://localhost:5173
 MONGODB_URI=mongodb://localhost:27017/forge
 REDIS_URL=redis://localhost:6379
 QDRANT_URL=http://localhost:6333
-QDRANT_API_KEY=your_qdrant_api_key_if_cloud
 
 GEMINI_API_KEY=your_google_gemini_api_key
 
-JWT_ACCESS_SECRET=your_super_secret_access_key_32_chars
-JWT_REFRESH_SECRET=your_super_secret_refresh_key_32_chars
+JWT_ACCESS_SECRET=your_secure_access_secret_32_chars
+JWT_REFRESH_SECRET=your_secure_refresh_secret_32_chars
 ```
 
-### 3. Launch Local Infrastructure Containers
+### 2. Infrastructure Containers
 Start MongoDB 7, Redis 7, and Qdrant Vector DB via Docker Compose:
 
 ```bash
 docker compose up -d
 ```
 
-### 4. Install Dependencies
-Install dependencies across all monorepo workspaces:
-
+### 3. Install Dependencies
 ```bash
 npm install
 ```
 
-### 5. Launch Development Services
-Run the monorepo services in separate terminal windows:
+### 4. Start Monorepo Services
+Run development services in separate terminals:
 
 ```bash
 # Terminal 1: Backend REST API (Port 4000)
 npm run dev:api
 
-# Terminal 2: Ingestion Queue Worker
+# Terminal 2: Ingestion Worker Queue
 npm run dev:worker
 
-# Terminal 3: React Web Workspace UI (Port 5173)
+# Terminal 3: React Workspace Web UI (Port 5173)
 npm run dev:web
 ```
 
-Access the web interface at `http://localhost:5173`.
+Access the application at `http://localhost:5173`.
 
 ---
 
-## 📡 Essential REST API Endpoints
+## REST API Overview
 
 | Category | Method | Endpoint | Description |
 | :--- | :--- | :--- | :--- |
-| **Auth** | `POST` | `/api/v1/auth/register` | Register account & initialize session |
-| **Auth** | `POST` | `/api/v1/auth/login` | Authenticate user & set HTTP-only cookie |
-| **Auth** | `POST` | `/api/v1/auth/refresh` | Rotate session & issue fresh access JWT |
-| **Projects** | `GET` | `/api/v1/projects` | List user workspace projects |
-| **Projects** | `POST` | `/api/v1/projects` | Initialize a new project container |
-| **Projects** | `GET` | `/api/v1/projects/:id/stats` | Retrieve workspace storage & document metrics |
-| **Documents**| `POST` | `/api/v1/projects/:id/documents` | Upload source file for async indexing |
-| **Documents**| `GET` | `/api/v1/projects/:id/documents` | List indexed documents & ingestion statuses |
-| **Search** | `POST` | `/api/v1/projects/:id/search` | Execute RRF hybrid search query |
-| **Chat** | `POST` | `/api/v1/projects/:id/chat` | Query RAG pipeline & return cited response |
-| **Memory** | `GET` | `/api/v1/projects/:id/memories` | Retrieve active project memory graph |
+| **Auth** | `POST` | `/api/v1/auth/register` | Register account and session |
+| **Auth** | `POST` | `/api/v1/auth/login` | Authenticate user and issue tokens |
+| **Auth** | `POST` | `/api/v1/auth/refresh` | Rotate session and refresh access JWT |
+| **Projects** | `GET` | `/api/v1/projects` | List workspace projects |
+| **Projects** | `POST` | `/api/v1/projects` | Create project workspace |
+| **Projects** | `GET` | `/api/v1/projects/:id/stats` | Fetch storage and indexing metrics |
+| **Documents**| `POST` | `/api/v1/projects/:id/documents` | Upload file for background indexing |
+| **Documents**| `GET` | `/api/v1/projects/:id/documents` | List indexed files and statuses |
+| **Search** | `POST` | `/api/v1/projects/:id/search` | Run reciprocal rank fusion hybrid search |
+| **Chat** | `POST` | `/api/v1/projects/:id/chat` | Query RAG pipeline and return cited response |
+| **Memory** | `GET` | `/api/v1/projects/:id/memories` | List active project memory entries |
 
 ---
 
-## 📚 Technical Reference Guides
+## Documentation
 
-For comprehensive technical documentation, refer to the [`docs/`](./docs) directory:
+Detailed technical reference guides are available in the [`docs/`](./docs) directory:
 
-- 📐 **[Architecture Overview](./docs/architecture.md)**: Deep dive into service topology, security scoping, RRF math, and worker queue routines.
-- 🔌 **[API Reference](./docs/api-reference.md)**: Complete HTTP endpoint specification, headers, request bodies, and error structures.
-- 🚀 **[Deployment Guide](./docs/deployment.md)**: Production deployment instructions for Vercel, Render (`render.yaml`), and Docker containers.
+- [Architecture Overview](./docs/architecture.md): Service topology, security boundaries, and queue routines.
+- [API Reference](./docs/api-reference.md): Endpoint specifications, headers, and response formats.
+- [Deployment Guide](./docs/deployment.md): Instructions for local setup, Render (`render.yaml`), and Vercel.
 
 ---
 
-## 📄 License
+## License
 
 Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 
 ---
 
-## 👤 Author
+## Author
 
 - [Jyot Shah](https://www.linkedin.com/in/jyotshah1/)
 
-For questions or issues, please open an issue on GitHub or mail to **jyotshah1595@gmail.com**.
-
----
-
-<p align="center">
-  Made with ⚡ for developer productivity
-</p>
-
+For questions or issues, please open an issue on GitHub or email **jyotshah1595@gmail.com**.
