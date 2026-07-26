@@ -3,6 +3,7 @@ import { NavLink, Outlet, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/client.js";
 import ForgeLogo from "../components/ForgeLogo.jsx";
+import CommandPalette from "../components/CommandPalette.jsx";
 
 export default function ProjectLayout() {
   const { projectId } = useParams();
@@ -35,6 +36,7 @@ export default function ProjectLayout() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden font-body-md text-body-md bg-background text-on-surface">
+      <CommandPalette />
       {/* Mobile Top Header */}
       <header className="md:hidden flex items-center justify-between px-4 py-3 bg-surface-container-low border-b border-outline-variant shrink-0 z-50">
         <div className="flex items-center gap-3">
