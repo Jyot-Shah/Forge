@@ -185,13 +185,20 @@ export default function ChatPage() {
                     </span>
                   </div>
 
-                  <div className={`rounded-sm p-4 text-[13px] leading-relaxed shadow-sm font-sans
-                       ${message.role === "user"
-                      ? "bg-primary text-on-primary"
-                      : "bg-surface-container border border-outline-variant text-primary"
+                  <div
+                    className={`rounded-sm p-4 text-[13px] leading-relaxed shadow-sm font-sans ${
+                      message.role === "user"
+                        ? "bg-surface-container-highest border border-outline-variant text-white"
+                        : "bg-surface-container border border-outline-variant text-slate-100"
                     }`}
                   >
-                    <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-surface-container-lowest prose-pre:border prose-pre:border-outline-variant prose-pre:rounded-sm prose-code:font-mono-code prose-a:text-cyan-400 prose-strong:text-current">
+                    <div
+                      className={`prose prose-sm max-w-none prose-invert ${
+                        message.role === "user"
+                          ? "prose-p:text-slate-100 prose-headings:text-white prose-strong:text-white prose-code:text-cyan-300"
+                          : "prose-p:text-slate-200 prose-headings:text-white prose-strong:text-white prose-code:text-cyan-300"
+                      } prose-p:leading-relaxed prose-pre:bg-surface-container-lowest prose-pre:border prose-pre:border-outline-variant prose-pre:rounded-sm prose-code:font-mono-code prose-a:text-cyan-400`}
+                    >
                       <ReactMarkdown>
                         {message.content === "null" || !message.content
                           ? "I could not generate a response."
@@ -200,8 +207,8 @@ export default function ChatPage() {
                     </div>
 
                     {message.citations?.length > 0 && (
-                      <div className={`mt-4 space-y-2 border-t pt-3 ${message.role === "user" ? "border-on-primary/20 text-on-primary/80" : "border-outline-variant/50"}`}>
-                        <div className="flex items-center gap-1 font-mono-label text-[10px] uppercase tracking-widest text-tertiary">
+                      <div className="mt-4 space-y-2 border-t border-outline-variant/50 pt-3">
+                        <div className="flex items-center gap-1 font-mono-label text-[10px] uppercase tracking-widest text-slate-400">
                           <span className="material-symbols-outlined text-[12px]">library_books</span>
                           Cited Context
                         </div>
@@ -209,13 +216,12 @@ export default function ChatPage() {
                           {message.citations.map((citation, i) => (
                             <li
                               key={`${citation.chunkId}-${i}`}
-                              className={`rounded-xs border px-2.5 py-1.5 flex flex-col font-mono-code text-[11px] leading-snug
-                                         ${message.role === 'user' ? 'border-on-primary/10 bg-on-primary/5' : 'border-outline-variant/50 bg-surface-container-lowest'}`}
+                              className="rounded-xs border border-outline-variant/50 bg-surface-container-lowest px-2.5 py-1.5 flex flex-col font-mono-code text-[11px] leading-snug"
                             >
                               <span className="font-medium text-cyan-400">
                                 {citation.documentName || `Chunk ${citation.chunkId?.slice(-6)}`}
                               </span>
-                              <span className={`${message.role === 'user' ? 'text-on-primary/80' : 'text-on-surface-variant'} truncate`}>
+                              <span className="text-slate-300 truncate">
                                 {citation.excerpt}
                               </span>
                             </li>
