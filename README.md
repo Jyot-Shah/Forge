@@ -5,11 +5,13 @@
 **An AI-Powered Developer Workspace & Persistent Project Knowledge Engine**
 
 [![Node.js Version](https://img.shields.io/badge/node.js-v20%2B-026e00?style=for-the-badge&logo=node.js)](https://nodejs.org/)
-[![React](https://img.shields.io/badge/react-v18-61dafb?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/react-v18.3-61dafb?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/tailwindcss-v4.0-06b6d4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
-[![MongoDB](https://img.shields.io/badge/mongodb-v7.0-47a248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
+[![Express](https://img.shields.io/badge/express-v4.21-000000?style=for-the-badge&logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/mongodb-v8.9-47a248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 [![Redis](https://img.shields.io/badge/redis-v7.0-dc382d?style=for-the-badge&logo=redis)](https://redis.io/)
 [![Qdrant](https://img.shields.io/badge/qdrant-vector%20db-d13854?style=for-the-badge&logo=database)](https://qdrant.tech/)
+[![Google Gemini](https://img.shields.io/badge/google%20gemini-ai%20sdk-8e75ff?style=for-the-badge&logo=google)](https://ai.google.dev/)
 
 </div>
 
@@ -23,112 +25,129 @@ Every piece of context in Forge is strictly scoped to a **Project Workspace**. O
 
 ---
 
-## 🎨 Modern-Industrial Minimalism Design System
+## 🎨 Modern-Industrial Minimalist Interface
 
-Forge features a **Modern-Industrial Minimalist UI** designed in **Stitch**:
+Forge features a high-density **Modern-Industrial Minimalist UI** designed for developer ergonomics:
 
-- **Obsidian Theme**: Strictly restrained dark mode (`#09090B` canvas, `#121214` panels, `#27272A` hairline borders).
-- **Typography**: **Geist** for technical headlines and body text; **JetBrains Mono** for code snippets, telemetry labels, and keyboard shortcuts.
-- **Tonal Layering**: Micro-details and hairline borders replace heavy blur gradients or floating drop shadows.
-- **High-Density Workspaces**: Compact layout grids optimized for professional software tools.
+- **Obsidian Dark Mode**: High-contrast, low-eyestrain dark palette (`#09090B` canvas, `#121214` level-1 panels, `#27272A` hairline borders).
+- **Precision Typography**: **Geist** font family for technical headlines and body copy; **JetBrains Mono** for code snippets, monospaced metadata pills, keyboard shortcuts, and telemetry logs.
+- **Tonal Layering & Hairlines**: Hairline borders replace heavy blur gradients or floating shadows for crisp, professional visual separation.
+- **High-Density Responsive Layouts**: Fluid 12-column grids on desktop with collapsible slide-over navigation drawers on mobile devices.
 
 ---
 
-## 🚀 Key Features
+## 🚀 Key Features & Architectural Capabilities
 
 ### 📁 1. Project-Scoped Knowledge Ingestion
-- Upload technical documents (`.md`, `.txt`, `.json`, `.py`, `.js`, `.ts`).
-- Automatic background parsing, deterministic text chunking, and metadata tagging.
-- Real-time status tracking (`pending` ➔ `processing` ➔ `ready` / `failed`).
+- Multi-format source file support (`.md`, `.txt`, `.json`, `.py`, `.js`, `.ts`).
+- Asynchronous background ingestion pipeline managed by **BullMQ** & **Redis**.
+- Real-time status lifecycle tracking (`pending` ➔ `processing` ➔ `ready` / `failed`).
 
 ### 🧠 2. Persistent Context & Memory Engine
-- Autonomous factual extraction from document ingestion and developer conversations.
-- Entity confidence scoring, classification tags, and timeline tracking.
-- Interactive Memory Graph to inspect or prune outdated project knowledge.
+- Factual extraction from document processing and developer chat interactions.
+- Entity confidence scoring, category tags, and historical timeline tracking.
+- Interactive Memory Graph interface to inspect or prune outdated project knowledge blocks.
 
 ### 🔍 3. Reciprocal Rank Fusion (RRF) Hybrid Search
 - Combines **MongoDB Lexical Search** and **Qdrant Vector Cosine Retrieval**.
-- Calculates unified rank fusion scores ($k=60$) for optimal context precision.
+- Calculates unified rank fusion scores ($k=60$) for accurate technical context retrieval.
 
 ### 💬 4. Evidence-Grounded AI Chat Core
-- Context-aware RAG pipeline powered by **Google Gemini AI**.
-- Streaming markdown rendering, syntax-highlighted code blocks, and cited source excerpts.
-- Session persistence and conversation management.
+- Context-aware RAG pipeline powered by **Google Gemini API** (`@google/genai`).
+- Real-time Markdown rendering via `react-markdown`, syntax-highlighted code snippets, and cited source document excerpts.
+- Conversation session history and prompt thread management.
 
-### ⚙️ 5. Telemetry & Worker Queue
-- Asynchronous ingestion pipeline powered by **BullMQ** on **Redis**.
-- Robust retry logic, exponential backoff, and processing telemetry diagnostic feeds.
+### ⚙️ 5. Asynchronous Worker Telemetry
+- Redis-backed BullMQ queue processor with automatic job retries, exponential backoff, and memory management.
+- Live workspace metrics detailing document counts, storage byte usage, chunk totals, and conversation counts.
 
 ---
 
 ## 🏗️ Architecture & Monorepo Structure
 
 ```text
-Forge Workspace Monorepo
+Forge Monorepo
 ├── apps/
 │   ├── api/          # Express REST API (Auth, Projects, Docs, RAG & Search endpoints)
-│   ├── web/          # React 18 + Vite + Tailwind CSS v4 Industrial Workspace UI
+│   ├── web/          # React 18 + Vite 6 + Tailwind CSS v4 Industrial Workspace UI
 │   └── worker/       # BullMQ Background Job Processor (Text Normalization & Embeddings)
 ├── packages/
-│   └── shared/       # Shared TypeScript/JS contracts, schemas, and constants
-├── docs/             # Technical reference documentation
-└── docker-compose.yml# Local infrastructure (MongoDB, Redis, Qdrant)
+│   ├── persistence/  # Shared Mongoose models & database connection routines
+│   └── shared/       # Shared contracts, Zod schemas, and system constants
+├── docs/             # Comprehensive technical documentation
+└── docker-compose.yml# Infrastructure setup (MongoDB 7, Redis 7, Qdrant)
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Complete Technology Stack & Libraries
 
-| Layer | Technology |
-| :--- | :--- |
-| **Frontend UI** | React 18, Vite, Tailwind CSS v4, TanStack Query, React Router v6 |
-| **Backend API** | Node.js, Express, Mongoose, JWT (HttpOnly Cookies) |
-| **Worker Queue** | BullMQ, Redis 7 |
-| **Databases** | MongoDB 7 (Metadata/History), Qdrant Cloud (Vector Index) |
-| **AI / RAG** | Google Gemini API (`text-embedding-004`, `gemini-1.5-flash`) |
+### Frontend (`apps/web`)
+- **Framework**: React 18.3, Vite 6.0
+- **Styling**: Tailwind CSS v4.0 (`@tailwindcss/vite`), `@tailwindcss/typography`
+- **Data Fetching & State**: TanStack React Query v5.62, Axios v1.7
+- **Routing**: React Router v7.1
+- **Rendering**: React Markdown v10.1
+
+### Backend API (`apps/api`) & Worker (`apps/worker`)
+- **Server Framework**: Node.js v20+, Express v4.21
+- **Queue System**: BullMQ v5.34, ioredis v5.4
+- **Database & Vectors**: MongoDB v7.0 (via Mongoose v8.9), Qdrant Vector DB (via `@qdrant/js-client-rest` v1.13)
+- **AI Models & Embeddings**: Google Gemini API (via `@google/genai` v1.0)
+- **Security & Validation**: JWT (`jsonwebtoken` v9.0), BcryptJS v2.4, Zod v3.24, Helmet v8.0, Multer v2.0, Cookie-Parser v1.4, CORS v2.8
 
 ---
 
 ## ⚡ Quick Start & Local Setup
 
 ### 1. Prerequisites
-- **Node.js**: `v20.11` or newer
-- **Docker Desktop**: For running local database containers
+- **Node.js**: `v20.11.0` or newer
+- **npm**: `v10.0.0` or newer
+- **Docker Desktop**: For running local infrastructure containers
 
 ### 2. Environment Configuration
-Copy `.env.example` to `.env` in the root directory:
+Copy `.env.example` to `.env` in the project root:
 
 ```bash
 cp .env.example .env
 ```
 
-Configure your credentials in `.env`:
+Configure environment credentials in `.env`:
 ```ini
+PORT=4000
+NODE_ENV=development
+WEB_ORIGIN=http://localhost:5173
+
 MONGODB_URI=mongodb://localhost:27017/forge
 REDIS_URL=redis://localhost:6379
 QDRANT_URL=http://localhost:6333
+QDRANT_API_KEY=your_qdrant_api_key_if_cloud
+
 GEMINI_API_KEY=your_google_gemini_api_key
-JWT_ACCESS_SECRET=your_super_secret_access_key
-JWT_REFRESH_SECRET=your_super_secret_refresh_key
+
+JWT_ACCESS_SECRET=your_super_secret_access_key_32_chars
+JWT_REFRESH_SECRET=your_super_secret_refresh_key_32_chars
 ```
 
-### 3. Launch Local Infrastructure
-Start MongoDB, Redis, and Qdrant via Docker Compose:
+### 3. Launch Local Infrastructure Containers
+Start MongoDB 7, Redis 7, and Qdrant Vector DB via Docker Compose:
 
 ```bash
 docker compose up -d
 ```
 
 ### 4. Install Dependencies
+Install dependencies across all monorepo workspaces:
+
 ```bash
 npm install
 ```
 
-### 5. Launch Development Monorepo
-Run services in separate terminals:
+### 5. Launch Development Services
+Run the monorepo services in separate terminal windows:
 
 ```bash
-# Terminal 1: REST API Server (Port 4000)
+# Terminal 1: Backend REST API (Port 4000)
 npm run dev:api
 
 # Terminal 2: Ingestion Queue Worker
@@ -138,35 +157,38 @@ npm run dev:worker
 npm run dev:web
 ```
 
-Open `http://localhost:5173` in your browser.
+Access the web interface at `http://localhost:5173`.
 
 ---
 
-## 📡 Essential API Routes
+## 📡 Essential REST API Endpoints
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/v1/auth/register` | Register account & initialize session |
-| `POST` | `/api/v1/auth/login` | Sign in & issue JWT credentials |
-| `GET` | `/api/v1/projects` | List active user workspace projects |
-| `POST` | `/api/v1/projects` | Initialize a new project container |
-| `POST` | `/api/v1/projects/:id/documents` | Upload source file for async indexing |
-| `POST` | `/api/v1/projects/:id/search` | Execute RRF hybrid search |
-| `POST` | `/api/v1/projects/:id/chat` | Send prompt to evidence-grounded AI model |
-| `GET` | `/api/v1/projects/:id/memories` | Retrieve active project memory graph |
+| Category | Method | Endpoint | Description |
+| :--- | :--- | :--- | :--- |
+| **Auth** | `POST` | `/api/v1/auth/register` | Register account & initialize session |
+| **Auth** | `POST` | `/api/v1/auth/login` | Authenticate user & set HTTP-only cookie |
+| **Auth** | `POST` | `/api/v1/auth/refresh` | Rotate session & issue fresh access JWT |
+| **Projects** | `GET` | `/api/v1/projects` | List user workspace projects |
+| **Projects** | `POST` | `/api/v1/projects` | Initialize a new project container |
+| **Projects** | `GET` | `/api/v1/projects/:id/stats` | Retrieve workspace storage & document metrics |
+| **Documents**| `POST` | `/api/v1/projects/:id/documents` | Upload source file for async indexing |
+| **Documents**| `GET` | `/api/v1/projects/:id/documents` | List indexed documents & ingestion statuses |
+| **Search** | `POST` | `/api/v1/projects/:id/search` | Execute RRF hybrid search query |
+| **Chat** | `POST` | `/api/v1/projects/:id/chat` | Query RAG pipeline & return cited response |
+| **Memory** | `GET` | `/api/v1/projects/:id/memories` | Retrieve active project memory graph |
 
 ---
 
-## 📚 Technical Documentation
+## 📚 Technical Reference Guides
 
-Explore detailed engineering reference guides in the [`docs/`](./docs) directory:
+For comprehensive technical documentation, refer to the [`docs/`](./docs) directory:
 
-- 📐 **[Architecture Guide](./docs/architecture.md)**: Deep dive into runtime components, data flows, and security boundaries.
-- 🔌 **[API Reference](./docs/api-reference.md)**: Complete HTTP endpoint contracts and payload schemas.
-- 🚀 **[Deployment Guide](./docs/deployment.md)**: Local Docker Compose setup and production deployment on Vercel & Render.
+- 📐 **[Architecture Overview](./docs/architecture.md)**: Deep dive into service topology, security scoping, RRF math, and worker queue routines.
+- 🔌 **[API Reference](./docs/api-reference.md)**: Complete HTTP endpoint specification, headers, request bodies, and error structures.
+- 🚀 **[Deployment Guide](./docs/deployment.md)**: Production deployment instructions for Vercel, Render (`render.yaml`), and Docker containers.
 
 ---
 
 ## 📄 License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+Distributed under the **MIT License**. See `LICENSE` for details.
