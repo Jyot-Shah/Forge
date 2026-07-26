@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { api, getAccessToken, setAccessToken } from "../api/client.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function RequireAuth({ children }) {
-  const [state, setState] = useState(() =>
-    getAccessToken() ? "ready" : "loading",
-  );
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    if (getAccessToken()) return;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin mb-3"></div>
+        <p className="font-mono-code text-mono-code text-on-surface-variant text-[13px]">
+          Authenticating session...
+        </p>
+      </div>
+    );
+  }
 
-    api
-      .post("/auth/refresh")
-      .then(({ data }) => {
-        setAccessToken(data.accessToken);
-        setState("ready");
-      })
-      .catch(() => setState("denied"));
-  }, []);
-
-  if (state === "loading") return <p>Restoring session…</p>;
-  return state === "ready" ? children : <Navigate to="/login" replace />;
+  return user ? children : <Navigate to="/login" replace />;
 }
