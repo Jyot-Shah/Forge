@@ -1,3 +1,0 @@
-Smart Expense Tracker
-
-Develop a lightweight web application that enables users to record, categorize, and monitor daily expenses. The application provides real time spending summaries, category wise analytics, and basic data visualization to help users manage personal finances efficiently. Built using JavaScript, Node.js, Express.js, MongoDB, and a responsive frontend.
