@@ -1,0 +1,19 @@
+{
+  "name": "@forge/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/worker.js",
+    "start": "node src/worker.js"
+  },
+  "dependencies": {
+    "@forge/persistence": "*",
+    "@google/genai": "^1.0.0",
+    "@qdrant/js-client-rest": "^1.13.0",
+    "bullmq": "^5.34.10",
+    "dotenv": "^16.4.7",
+    "ioredis": "^5.4.2",
+    "mongoose": "^8.9.5"
+  }
+}

@@ -1,0 +1,263 @@
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import { api } from "../api/client.js";
+
+function roleLabel(role) {
+  return role === "assistant"
+    ? "Forge AI"
+    : role === "system"
+      ? "System"
+      : "User";
+}
+
+export default function ChatPage() {
+  const { projectId } = useParams();
+  const [messages, setMessages] = useState([]);
+  const [conversationId, setConversationId] = useState(null);
+  const [activeConversation, setActiveConversation] = useState(null);
+  const [text, setText] = useState("");
+  const [error, setError] = useState("");
+  const endRef = useRef(null);
+
+  const conversations = useQuery({
+    queryKey: ["conversations", projectId],
+    queryFn: async () =>
+      (await api.get(`/projects/${projectId}/chat`)).data.conversations,
+  });
+
+  const activeChat = useQuery({
+    queryKey: ["conversation", projectId, conversationId],
+    queryFn: async () =>
+      (await api.get(`/projects/${projectId}/chat/${conversationId}`)).data,
+    enabled: !!conversationId,
+  });
+
+  useEffect(() => {
+    if (activeChat.data) {
+      setMessages(activeChat.data.messages || []);
+      setActiveConversation(activeChat.data.conversation);
+    } else if (!conversationId) {
+      setMessages([]);
+      setActiveConversation(null);
+    }
+  }, [activeChat.data, conversationId]);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+  }, [messages]);
+
+  const send = useMutation({
+    mutationFn: ({ content, activeConversationId }) =>
+      api.post(`/projects/${projectId}/chat`, {
+        content,
+        conversationId: activeConversationId,
+      }),
+    onSuccess: ({ data }, variables) => {
+      if (!conversationId) {
+        setConversationId(data.conversation._id);
+      }
+      setMessages((current) => [...current, data.message]);
+      setActiveConversation(data.conversation);
+      setError("");
+      conversations.refetch();
+    },
+    onError: (mutationError) => {
+      const status = mutationError.response?.status;
+      let msg =
+        mutationError.response?.data?.error?.message ||
+        "Unable to send message.";
+      if (status === 429)
+        msg = "Rate limit exceeded. Please wait a moment and try again.";
+      setError(msg);
+    },
+  });
+
+  function submit(event) {
+    event.preventDefault();
+    const content = text.trim();
+    if (!content || send.isPending) return;
+    setError("");
+    setText("");
+    if (!conversationId)
+      setMessages((current) => [...current, { role: "user", content }]);
+    else setMessages((current) => [...current, { role: "user", content }]);
+    send.mutate({ content, activeConversationId: conversationId });
+  }
+
+  return (
+    <section className="flex h-full bg-surface border border-outline-variant rounded-DEFAULT overflow-hidden">
+      {/* Sidebar: Conversation History */}
+      <div className="w-72 border-r border-outline-variant bg-surface-container-lowest flex flex-col shrink-0">
+        <div className="h-12 border-b border-outline-variant flex items-center px-4 shrink-0 bg-surface-container-low">
+          <h2 className="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest">
+            Chat Sessions
+          </h2>
+        </div>
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-2 space-y-1">
+          <button
+            onClick={() => setConversationId(null)}
+            className={`w-full text-left px-3 py-2 rounded-sm font-mono-code text-[13px] flex items-center gap-2 transition-colors ${!conversationId
+                ? "bg-primary text-on-primary font-bold"
+                : "text-primary hover:bg-surface-container-high"
+              }`}
+          >
+            <span className="material-symbols-outlined text-[16px]">add_box</span>
+            New Session
+          </button>
+
+          <div className="pt-2">
+            {conversations.isLoading ? (
+              <p className="px-3 py-2 font-mono-code text-[11px] text-tertiary">Loading index...</p>
+            ) : conversations.data?.length ? (
+              <div className="space-y-[1px]">
+                {conversations.data.map((conv) => (
+                  <button
+                    key={conv._id}
+                    onClick={() => setConversationId(conv._id)}
+                    className={`w-full text-left px-3 py-2.5 rounded-sm transition-colors group ${conversationId === conv._id
+                        ? "bg-surface-container-highest border-l-2 border-primary"
+                        : "border-l-2 border-transparent hover:bg-surface-container"
+                      }`}
+                  >
+                    <p className={`truncate font-mono-code text-[12px] leading-tight ${conversationId === conv._id ? 'text-primary font-bold' : 'text-on-surface-variant group-hover:text-primary'}`}>
+                      {conv.title}
+                    </p>
+                    <p className="mt-1 font-mono-code text-[10px] text-tertiary">
+                      {new Date(
+                        conv.lastMessageAt || conv.createdAt,
+                      ).toLocaleDateString()}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="px-3 py-2 font-mono-code text-[11px] text-tertiary">No historical sessions.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col min-w-0 bg-surface bg-grid-pattern">
+        <header className="h-12 border-b border-outline-variant bg-surface-container/80 flex items-center px-4 justify-between shrink-0 backdrop-blur-md">
+          <div className="font-mono-code text-[13px] text-primary truncate">
+            {conversationId
+              ? activeConversation?.title || "Active session"
+              : "Initialize connection to query source context..."}
+          </div>
+          <span className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+            <span className="font-mono-label text-[10px] text-success uppercase tracking-widest">Active</span>
+          </span>
+        </header>
+
+        {/* Message Thread */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 scrollbar-thin">
+          {messages.length > 0 ? (
+            messages.map((message, index) => (
+              <article
+                className={`flex w-full ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                key={`${index}-${message.role}`}
+              >
+                <div className={`flex flex-col gap-1 max-w-[85%] md:max-w-[75%]`}>
+                  <div className={`flex items-center gap-2 px-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <span className="font-mono-label text-[10px] uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
+                      {message.role === "assistant" && <span className="material-symbols-outlined text-[12px]">smart_toy</span>}
+                      {message.role === "user" && <span className="material-symbols-outlined text-[12px]">person</span>}
+                      {roleLabel(message.role)}
+                    </span>
+                  </div>
+
+                  <div className={`rounded-sm p-4 text-[13px] leading-relaxed shadow-sm font-sans
+                       ${message.role === "user"
+                      ? "bg-primary text-on-primary"
+                      : "bg-surface-container border border-outline-variant text-primary"
+                    }`}
+                  >
+                    <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-surface-container-lowest prose-pre:border prose-pre:border-outline-variant prose-pre:rounded-sm prose-code:font-mono-code prose-a:text-cyan-400 prose-strong:text-current">
+                      <ReactMarkdown>
+                        {message.content === "null" || !message.content
+                          ? "I could not generate a response."
+                          : message.content}
+                      </ReactMarkdown>
+                    </div>
+
+                    {message.citations?.length > 0 && (
+                      <div className={`mt-4 space-y-2 border-t pt-3 ${message.role === "user" ? "border-on-primary/20 text-on-primary/80" : "border-outline-variant/50"}`}>
+                        <div className="flex items-center gap-1 font-mono-label text-[10px] uppercase tracking-widest text-tertiary">
+                          <span className="material-symbols-outlined text-[12px]">library_books</span>
+                          Cited Context
+                        </div>
+                        <ul className="space-y-1.5 list-none m-0 p-0">
+                          {message.citations.map((citation, i) => (
+                            <li
+                              key={`${citation.chunkId}-${i}`}
+                              className={`rounded-xs border px-2.5 py-1.5 flex flex-col font-mono-code text-[11px] leading-snug
+                                         ${message.role === 'user' ? 'border-on-primary/10 bg-on-primary/5' : 'border-outline-variant/50 bg-surface-container-lowest'}`}
+                            >
+                              <span className="font-medium text-cyan-400">
+                                {citation.documentName || `Chunk ${citation.chunkId?.slice(-6)}`}
+                              </span>
+                              <span className={`${message.role === 'user' ? 'text-on-primary/80' : 'text-on-surface-variant'} truncate`}>
+                                {citation.excerpt}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center p-6 border border-dashed border-outline-variant rounded-DEFAULT bg-surface-container-lowest">
+              <span className="material-symbols-outlined text-outline text-4xl mb-3">forum</span>
+              <p className="font-mono-code text-on-surface-variant text-[13px] text-center max-w-sm">
+                Initialize query sequence. The Forge AI model has full lexical and semantic access to your project documents and contextual memory index.
+              </p>
+            </div>
+          )}
+          <div ref={endRef} />
+        </div>
+
+        {/* Console Input */}
+        <form className="p-4 bg-surface-container-lowest border-t border-outline-variant" onSubmit={submit}>
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2 relative">
+              <div className="absolute top-3 left-3 text-tertiary font-mono-code text-[14px]">
+                $
+              </div>
+              <textarea
+                className="flex-1 min-h-[5rem] max-h-[15rem] bg-surface border border-outline-variant rounded-sm px-8 py-3 font-mono-code text-[13px] text-primary focus:border-primary outline-none transition-colors resize-none placeholder:text-outline"
+                value={text}
+                onChange={(event) => setText(event.target.value)}
+                placeholder="Enter query..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    submit(e);
+                  }
+                }}
+              />
+              <button
+                className="bg-primary text-on-primary px-6 rounded-sm font-mono-label text-[12px] uppercase tracking-wider disabled:opacity-50 hover:bg-primary-container transition-colors active:scale-[0.98] flex flex-col items-center justify-center gap-1"
+                disabled={send.isPending || !text.trim()}
+                type="submit"
+              >
+                <span className="material-symbols-outlined text-[20px]">send</span>
+                <span>{send.isPending ? "Executing" : "Send"}</span>
+              </button>
+            </div>
+            <div className="flex justify-between items-center px-1">
+              <span className="font-mono-code text-[10px] text-tertiary">Press Enter to execute, Shift+Enter for newline</span>
+              {error && <span className="font-mono-code text-[10px] text-error">{error}</span>}
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  );
+}
