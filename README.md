@@ -191,4 +191,19 @@ For comprehensive technical documentation, refer to the [`docs/`](./docs) direct
 
 ## 📄 License
 
-Distributed under the **MIT License**. See `LICENSE` for details.
+Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
+
+---
+
+## 👤 Author
+
+- [Jyot Shah](https://www.linkedin.com/in/jyotshah1/)
+
+For questions or issues, please open an issue on GitHub or mail to **jyotshah1595@gmail.com**.
+
+---
+
+<p align="center">
+  Made with ⚡ for developer productivity
+</p>
+
