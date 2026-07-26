@@ -1,6 +1,6 @@
 <div align="center">
 
-# FORGE
+# ⚡ FORGE
 
 **An AI-Powered Developer Workspace & Persistent Project Knowledge Engine**
 
@@ -17,7 +17,7 @@
 
 ---
 
-## Overview
+## 💡 Overview
 
 **Forge** is a developer workspace built to continuously ingest, index, and retrieve project-scoped technical documentation, codebase specifications, and contextual memories.
 
@@ -25,9 +25,9 @@ Unlike standard conversational interfaces, Forge builds an evolving technical un
 
 ---
 
-## Design System
+## 🎨 Design System
 
-Forge features a high-density industrial interface designed for software engineering workflows:
+Forge features a high-density industrial interface designed for developer ergonomics:
 
 - **Obsidian Dark Mode**: High-contrast theme (`#09090B` canvas, `#121214` level-1 panels, `#27272A` hairline borders).
 - **Typography**: **Geist** for technical headlines and body copy; **JetBrains Mono** for code snippets, metadata tags, and telemetry logs.
@@ -36,30 +36,17 @@ Forge features a high-density industrial interface designed for software enginee
 
 ---
 
-## Core System Architecture
+## 🚀 Core System Capabilities
 
-### 1. Document Ingestion Pipeline
-- Supports `.md`, `.txt`, `.json`, `.py`, `.js`, `.ts` source files.
-- Asynchronous BullMQ background worker queue running on Redis.
-- Lifecycle state transitions (`pending` ➔ `processing` ➔ `ready` / `failed`).
-
-### 2. Persistent Memory Graph Engine
-- Factual extraction from document ingestion and developer chat interactions.
-- Entity confidence scoring, classification tags, and timeline tracking.
-- Memory management interface to inspect or prune outdated project knowledge blocks.
-
-### 3. Reciprocal Rank Fusion (RRF) Hybrid Search
-- Merges **MongoDB Lexical Search** and **Qdrant Vector Cosine Retrieval**.
-- Calculates unified rank fusion scores ($k=60$) for technical context matching.
-
-### 4. Grounded RAG Chat Engine
-- RAG pipeline powered by **Google Gemini API** (`@google/genai`).
-- Markdown rendering, code snippet highlighting, and cited source document excerpts.
-- Thread management and conversation session tracking.
+- **Project-Scoped Document Ingestion**: Supports `.md`, `.txt`, `.json`, `.py`, `.js`, `.ts` files with real-time lifecycle tracking.
+- **Persistent Memory Graph Engine**: Factual extraction from document ingestion and developer chat interactions.
+- **Reciprocal Rank Fusion (RRF)**: Merges **MongoDB Lexical Search** and **Qdrant Vector Cosine Retrieval** ($k=60$).
+- **Grounded RAG Chat Core**: Context-aware pipeline powered by **Google Gemini API** (`@google/genai`) with markdown & citation references.
+- **Asynchronous Worker Queue**: Redis-backed **BullMQ** job processor with exponential backoff and job telemetry.
 
 ---
 
-## Repository Structure
+## 🏗️ Repository Structure
 
 ```text
 Forge Monorepo
@@ -76,7 +63,7 @@ Forge Monorepo
 
 ---
 
-## Technology Stack
+## 🛠️ Technology Stack
 
 ### Frontend (`apps/web`)
 - React 18.3, Vite 6.0, Tailwind CSS v4.0 (`@tailwindcss/vite`), `@tailwindcss/typography`
@@ -91,7 +78,7 @@ Forge Monorepo
 
 ---
 
-## Local Development Setup
+## ⚡ Local Development Setup
 
 ### Prerequisites
 - Node.js v20.11.0 or newer
@@ -151,7 +138,7 @@ Access the application at `http://localhost:5173`.
 
 ---
 
-## REST API Overview
+## 📡 REST API Overview
 
 | Category | Method | Endpoint | Description |
 | :--- | :--- | :--- | :--- |
@@ -169,24 +156,30 @@ Access the application at `http://localhost:5173`.
 
 ---
 
-## Documentation
+## 📚 Technical Documentation
 
 Detailed technical reference guides are available in the [`docs/`](./docs) directory:
 
-- [Architecture Overview](./docs/architecture.md): Service topology, security boundaries, and queue routines.
-- [API Reference](./docs/api-reference.md): Endpoint specifications, headers, and response formats.
-- [Deployment Guide](./docs/deployment.md): Instructions for local setup, Render (`render.yaml`), and Vercel.
+- 📐 **[Architecture Overview](./docs/architecture.md)**: Service topology, security boundaries, and queue routines.
+- 🔌 **[API Reference](./docs/api-reference.md)**: Endpoint specifications, headers, and response formats.
+- 🚀 **[Deployment Guide](./docs/deployment.md)**: Instructions for local setup, Render (`render.yaml`), and Vercel.
 
 ---
 
-## License
+## 📄 License
 
 Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 
 ---
 
-## Author
+## 👤 Author
 
 - [Jyot Shah](https://www.linkedin.com/in/jyotshah1/)
 
 For questions or issues, please open an issue on GitHub or email **jyotshah1595@gmail.com**.
+
+---
+
+<p align="center">
+  Made with ⚡ for developer productivity
+</p>
