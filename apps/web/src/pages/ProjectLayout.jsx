@@ -41,7 +41,7 @@ export default function ProjectLayout() {
       <CommandPalette />
       {/* Mobile Top Header */}
       <header className="md:hidden flex items-center justify-between px-4 py-3 bg-surface-container-low border-b border-outline-variant shrink-0 z-50">
-        <Link to={`/projects/${projectId}`} className="flex items-center gap-3">
+        <Link to="/projects" className="flex items-center gap-3">
           <ForgeLogo className="w-7 h-7" />
           <div>
             <h1 className="font-mono-label text-mono-label font-bold text-primary uppercase tracking-widest">Forge</h1>
@@ -68,9 +68,9 @@ export default function ProjectLayout() {
         <div>
           {/* Header */}
           <Link
-            to={`/projects/${projectId}`}
+            to="/projects"
             className="px-5 pb-5 pt-1 mb-3 border-b border-outline-variant/40 hidden md:flex items-center gap-3 group hover:opacity-90 transition"
-            title="Go to Project Dashboard"
+            title="Go to Projects Directory"
           >
             <ForgeLogo className="w-8 h-8 group-hover:scale-105 transition-transform" />
             <div>

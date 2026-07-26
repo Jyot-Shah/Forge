@@ -48,13 +48,13 @@ export default function ProjectsPage() {
       <div className="max-w-[1440px] mx-auto space-y-8">
         {/* Header & Navigation bar */}
         <header className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-outline-variant">
-          <div className="flex items-center gap-3">
-            <ForgeLogo className="w-8 h-8" />
+          <Link to="/projects" className="flex items-center gap-3 group hover:opacity-90 transition">
+            <ForgeLogo className="w-8 h-8 group-hover:scale-105 transition-transform" />
             <div>
-              <h1 className="font-mono-label text-mono-label font-bold tracking-widest text-primary uppercase">Forge</h1>
+              <h1 className="font-mono-label text-mono-label font-bold tracking-widest text-primary uppercase group-hover:text-white">Forge</h1>
               <p className="font-body-sm text-body-sm text-on-surface-variant">Project Directory & Knowledge Hub</p>
             </div>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-3 font-mono-label text-mono-label">
             <span className="px-3 py-1 level-1 border border-outline-variant text-on-surface-variant">
