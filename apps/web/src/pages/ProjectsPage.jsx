@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client.js";
 import ForgeLogo from "../components/ForgeLogo.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function ProjectRoleBadge({ role }) {
   return (
@@ -15,6 +16,7 @@ function ProjectRoleBadge({ role }) {
 export default function ProjectsPage() {
   const formRef = useRef(null);
   const queryClient = useQueryClient();
+  const { logout } = useAuth();
 
   const create = useMutation({
     mutationFn: (name) => api.post("/projects", { name }),
@@ -40,19 +42,36 @@ export default function ProjectsPage() {
     queryFn: async () => (await api.get("/projects")).data,
   });
 
-  if (isLoading) return <div className="p-8 font-mono-code text-on-surface-variant">Loading workspace projects…</div>;
-  if (error) return <div className="p-8 font-mono-code text-error">Unable to load workspace projects.</div>;
+  if (isLoading)
+    return (
+      <div className="p-8 font-mono-code text-on-surface-variant">
+        Loading workspace projects…
+      </div>
+    );
+  if (error)
+    return (
+      <div className="p-8 font-mono-code text-error">
+        Unable to load workspace projects.
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-background text-on-surface p-6 md:p-10">
       <div className="max-w-[1440px] mx-auto space-y-8">
         {/* Header & Navigation bar */}
         <header className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-outline-variant">
-          <Link to="/projects" className="flex items-center gap-3 group hover:opacity-90 transition">
+          <Link
+            to="/projects"
+            className="flex items-center gap-3 group hover:opacity-90 transition"
+          >
             <ForgeLogo className="w-8 h-8 group-hover:scale-105 transition-transform" />
             <div>
-              <h1 className="font-mono-label text-mono-label font-bold tracking-widest text-primary uppercase group-hover:text-white">Forge</h1>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">Project Directory & Knowledge Hub</p>
+              <h1 className="font-mono-label text-mono-label font-bold tracking-widest text-primary uppercase group-hover:text-white">
+                Forge
+              </h1>
+              <p className="font-body-sm text-body-sm text-on-surface-variant">
+                Project Directory & Knowledge Hub
+              </p>
             </div>
           </Link>
 
@@ -63,6 +82,15 @@ export default function ProjectsPage() {
             <span className="px-3 py-1 level-1 border border-outline-variant text-primary">
               Projects: {data.projects.length}
             </span>
+            <button
+              onClick={logout}
+              className="ghost-button !py-1 !px-3 text-xs flex items-center gap-1.5 hover:!border-error hover:!text-error"
+            >
+              <span className="material-symbols-outlined text-[14px]">
+                logout
+              </span>
+              Sign Out
+            </button>
           </div>
         </header>
 
@@ -77,7 +105,8 @@ export default function ProjectsPage() {
               Initialize New Project
             </h2>
             <p className="font-body-md text-body-md text-on-surface-variant mb-6 max-w-xl">
-              Create an isolated project container for document vectorization, entity memory graph extraction, and contextual RAG chat.
+              Create an isolated project container for document vectorization,
+              entity memory graph extraction, and contextual RAG chat.
             </p>
 
             <form
@@ -110,15 +139,21 @@ export default function ProjectsPage() {
               <ul className="space-y-3 font-body-sm text-on-surface-variant">
                 <li className="flex items-center justify-between py-1.5 border-b border-outline-variant/30">
                   <span>Storage Engine</span>
-                  <span className="font-mono-code text-primary">MongoDB / FS</span>
+                  <span className="font-mono-code text-primary">
+                    MongoDB / FS
+                  </span>
                 </li>
                 <li className="flex items-center justify-between py-1.5 border-b border-outline-variant/30">
                   <span>Search Pipeline</span>
-                  <span className="font-mono-code text-primary">Hybrid Lexical+Vector</span>
+                  <span className="font-mono-code text-primary">
+                    Hybrid Lexical+Vector
+                  </span>
                 </li>
                 <li className="flex items-center justify-between py-1.5">
                   <span>Worker Queue</span>
-                  <span className="font-mono-code text-primary">BullMQ / Redis</span>
+                  <span className="font-mono-code text-primary">
+                    BullMQ / Redis
+                  </span>
                 </li>
               </ul>
             </div>
@@ -132,7 +167,9 @@ export default function ProjectsPage() {
         {/* Projects Grid */}
         <section className="space-y-4 pt-4">
           <div className="flex items-center justify-between border-b border-outline-variant pb-3">
-            <h2 className="font-headline-lg text-headline-lg font-semibold text-primary">Active Workspaces</h2>
+            <h2 className="font-headline-lg text-headline-lg font-semibold text-primary">
+              Active Workspaces
+            </h2>
             <span className="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest">
               Showing {data.projects.length} Items
             </span>
@@ -157,7 +194,11 @@ export default function ProjectsPage() {
                         {project.role === "owner" && (
                           <button
                             onClick={() => {
-                              if (confirm("Are you sure you want to delete this project?")) {
+                              if (
+                                confirm(
+                                  "Are you sure you want to delete this project?",
+                                )
+                              ) {
                                 remove.mutate(project._id);
                               }
                             }}
@@ -177,7 +218,8 @@ export default function ProjectsPage() {
                     </Link>
 
                     <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-6">
-                      {project.description || "Project container ready for document ingestion and semantic search."}
+                      {project.description ||
+                        "Project container ready for document ingestion and semantic search."}
                     </p>
                   </div>
 
@@ -188,7 +230,9 @@ export default function ProjectsPage() {
                       className="ghost-button !py-1 !px-2 text-xs flex items-center gap-1"
                     >
                       Open Workspace
-                      <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                      <span className="material-symbols-outlined text-[14px]">
+                        arrow_forward
+                      </span>
                     </Link>
                   </div>
                 </article>
@@ -196,9 +240,15 @@ export default function ProjectsPage() {
             </div>
           ) : (
             <div className="level-1 p-12 text-center rounded-DEFAULT border border-outline-variant">
-              <span className="material-symbols-outlined text-4xl text-on-surface-variant mb-2">folder_off</span>
-              <p className="font-body-md text-on-surface-variant mb-4">No active projects found in this workspace.</p>
-              <p className="font-mono-label text-mono-label text-on-surface-variant">Use the form above to initialize your first project.</p>
+              <span className="material-symbols-outlined text-4xl text-on-surface-variant mb-2">
+                folder_off
+              </span>
+              <p className="font-body-md text-on-surface-variant mb-4">
+                No active projects found in this workspace.
+              </p>
+              <p className="font-mono-label text-mono-label text-on-surface-variant">
+                Use the form above to initialize your first project.
+              </p>
             </div>
           )}
         </section>

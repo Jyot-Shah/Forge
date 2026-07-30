@@ -9,7 +9,13 @@ export default function ProjectTasksPage() {
 
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("medium");
+  const [category, setCategory] = useState("general");
+  const [dueDate, setDueDate] = useState("");
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const categories = ["all", "general", "bug", "feature", "refactor", "design"];
 
   const tasksQuery = useQuery({
     queryKey: ["tasks", projectId],
@@ -23,6 +29,8 @@ export default function ProjectTasksPage() {
     onSuccess: () => {
       setTitle("");
       setPriority("medium");
+      setCategory("general");
+      setDueDate("");
       queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
     },
     onError: (err) =>
@@ -46,7 +54,11 @@ export default function ProjectTasksPage() {
   function handleCreate(e) {
     e.preventDefault();
     if (!title.trim()) return;
-    create.mutate({ title: title.trim(), priority });
+    const taskPayload = { title: title.trim(), priority, category };
+    if (dueDate) {
+      taskPayload.dueDate = new Date(dueDate).toISOString();
+    }
+    create.mutate(taskPayload);
   }
 
   if (tasksQuery.isLoading)
@@ -58,20 +70,35 @@ export default function ProjectTasksPage() {
 
   const tasks = tasksQuery.data || [];
 
-  const pendingTasks = tasks.filter((t) => t.status !== "completed");
-  const completedTasks = tasks.filter((t) => t.status === "completed");
+  const filteredTasks = tasks
+    .filter(
+      (t) =>
+        selectedCategory === "all" ||
+        t.category === selectedCategory ||
+        (!t.category && selectedCategory === "general"),
+    )
+    .filter((t) => t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const pendingTasks = filteredTasks.filter((t) => t.status !== "completed");
+  const completedTasks = filteredTasks.filter((t) => t.status === "completed");
 
   const getPriorityBadge = (p) => {
     if (p === "high")
       return (
-        <span className="text-[11px] font-mono-label text-error uppercase tracking-widest border border-error/30 bg-error/10 px-1 py-0.5 rounded-sm">High</span>
+        <span className="text-[11px] font-mono-label text-error uppercase tracking-widest border border-error/30 bg-error/10 px-1 py-0.5 rounded-sm">
+          High
+        </span>
       );
     if (p === "medium")
       return (
-        <span className="text-[11px] font-mono-label text-warning uppercase tracking-widest border border-warning/30 bg-warning/10 px-1 py-0.5 rounded-sm">Med</span>
+        <span className="text-[11px] font-mono-label text-warning uppercase tracking-widest border border-warning/30 bg-warning/10 px-1 py-0.5 rounded-sm">
+          Med
+        </span>
       );
     return (
-      <span className="text-[11px] font-mono-label text-success uppercase tracking-widest border border-success/30 bg-success/10 px-1 py-0.5 rounded-sm">Low</span>
+      <span className="text-[11px] font-mono-label text-success uppercase tracking-widest border border-success/30 bg-success/10 px-1 py-0.5 rounded-sm">
+        Low
+      </span>
     );
   };
 
@@ -80,23 +107,62 @@ export default function ProjectTasksPage() {
       {/* Top Toolbar */}
       <header className="h-12 border-b border-outline-variant bg-surface-container-low flex items-center px-4 justify-between shrink-0">
         <div className="flex items-center gap-2 font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest">
-          <span className="material-symbols-outlined text-[16px]">task_alt</span>
+          <span className="material-symbols-outlined text-[16px]">
+            task_alt
+          </span>
           <span>Task Ledger</span>
         </div>
       </header>
 
       {/* Main Container */}
       <div className="p-4 flex-1 overflow-y-auto space-y-6">
-        {/* Title area */}
-        <div>
-          <h2 className="font-headline-xl text-headline-xl text-primary tracking-tighter">Issue Tracking</h2>
-          <p className="mt-2 text-on-surface-variant max-w-2xl text-[13px] font-mono-code">
-            Keep track of pending engineering work, architectural revisions, and roadmap bugs explicitly inside your Forge workspace.
-          </p>
+        {/* Title area & Search */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h2 className="font-headline-xl text-headline-xl text-primary tracking-tighter">
+              Issue Tracking
+            </h2>
+            <p className="mt-2 text-on-surface-variant max-w-2xl text-[13px] font-mono-code">
+              Keep track of pending engineering work, architectural revisions,
+              and roadmap bugs explicitly inside your Forge workspace.
+            </p>
+          </div>
+          <div className="relative w-full md:w-64 shrink-0">
+            <span className="material-symbols-outlined absolute left-2.5 top-2 text-[18px] text-tertiary">
+              search
+            </span>
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-surface-container-high border border-outline-variant rounded-sm pl-9 pr-3 py-2 font-mono-code text-[12px] text-primary focus:outline-none focus:border-primary transition-colors placeholder:text-tertiary"
+            />
+          </div>
+        </div>
+
+        {/* Categories Tab */}
+        <div className="flex flex-wrap gap-2 border-b border-outline-variant/50 pb-4 max-w-4xl">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`font-mono-label text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-sm border transition-colors ${
+                selectedCategory === cat
+                  ? "bg-primary text-on-primary border-primary"
+                  : "bg-surface-container border-outline-variant/50 text-on-surface-variant hover:bg-surface-container-high hover:text-primary"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
         {/* Form */}
-        <form onSubmit={handleCreate} className="flex gap-2 max-w-4xl">
+        <form
+          onSubmit={handleCreate}
+          className="flex flex-wrap gap-2 max-w-4xl"
+        >
           <input
             type="text"
             value={title}
@@ -106,14 +172,34 @@ export default function ProjectTasksPage() {
             autoFocus
           />
           <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-28 bg-surface-container-lowest border border-outline-variant rounded focus:border-primary transition-colors py-3 px-2 text-primary font-mono-code text-[12px] outline-none cursor-pointer"
+          >
+            <option value="general">General</option>
+            <option value="bug">Bug</option>
+            <option value="feature">Feature</option>
+            <option value="refactor">Refactor</option>
+            <option value="design">Design</option>
+          </select>
+          <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            className="w-32 bg-surface-container-lowest border border-outline-variant rounded focus:border-primary transition-colors py-3 px-2 text-primary font-mono-code text-[12px] outline-none cursor-pointer"
+            className="w-28 bg-surface-container-lowest border border-outline-variant rounded focus:border-primary transition-colors py-3 px-2 text-primary font-mono-code text-[12px] outline-none cursor-pointer"
           >
             <option value="low">Low Pri</option>
             <option value="medium">Medium Pri</option>
             <option value="high">High Pri</option>
           </select>
+          <div className="relative">
+            <input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="bg-surface-container-lowest border border-outline-variant rounded focus:border-primary transition-colors py-3 px-2 text-primary font-mono-code text-[12px] outline-none cursor-pointer min-w-[130px]"
+              title="Optional Due Date"
+            />
+          </div>
           <button
             type="submit"
             disabled={!title.trim() || create.isPending}
@@ -125,7 +211,9 @@ export default function ProjectTasksPage() {
 
         {error && (
           <div className="p-3 level-1 border-error/50 text-error font-mono-code text-[11px] rounded flex items-center gap-2 max-w-4xl">
-            <span className="material-symbols-outlined text-[14px]">warning</span>
+            <span className="material-symbols-outlined text-[14px]">
+              warning
+            </span>
             {error}
           </div>
         )}
@@ -140,26 +228,55 @@ export default function ProjectTasksPage() {
 
             {pendingTasks.length === 0 ? (
               <div className="p-12 border border-dashed border-outline-variant rounded-DEFAULT text-center flex items-center justify-center">
-                <span className="font-mono-code text-[13px] text-tertiary">Zero unhandled exceptions or pending tasks.</span>
+                <span className="font-mono-code text-[13px] text-tertiary">
+                  Zero unhandled exceptions or pending tasks.
+                </span>
               </div>
             ) : (
               <div className="border border-outline-variant rounded-DEFAULT bg-surface-container overflow-hidden divide-y divide-outline-variant">
                 {pendingTasks.map((task) => (
-                  <div key={task._id} className="level-2 hover:bg-surface-container-high transition-colors flex items-center px-4 py-3 group">
+                  <div
+                    key={task._id}
+                    className="level-2 hover:bg-surface-container-high transition-colors flex items-center px-4 py-3 group"
+                  >
                     {/* Checkbox */}
                     <button
-                      onClick={() => update.mutate({ taskId: task._id, updates: { status: "completed" } })}
+                      onClick={() =>
+                        update.mutate({
+                          taskId: task._id,
+                          updates: { status: "completed" },
+                        })
+                      }
                       className="w-6 h-6 shrink-0 border border-outline-variant rounded-sm flex items-center justify-center text-transparent hover:text-success hover:border-success transition-colors group-hover:bg-surface-container-highest mr-4"
                     >
-                      <span className="material-symbols-outlined text-[16px]">check</span>
+                      <span className="material-symbols-outlined text-[16px]">
+                        check
+                      </span>
                     </button>
 
                     {/* Content */}
                     <div className="flex-1 flex flex-col justify-center overflow-hidden pr-4">
-                      <span className="text-[13px] font-mono-code text-primary truncate leading-tight">{task.title}</span>
-                      <span className="text-[10px] font-mono-code text-tertiary">
-                        {new Date(task.createdAt).toLocaleDateString()}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[13px] font-mono-code text-primary truncate leading-tight">
+                          {task.title}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="inline-flex items-center justify-center rounded-sm bg-primary/20 text-primary px-1 font-mono-label text-[9px] uppercase">
+                          {task.category || "general"}
+                        </span>
+                        {task.dueDate && (
+                          <span className="text-[9px] font-mono-label uppercase tracking-widest text-warning flex items-center gap-0.5">
+                            <span className="material-symbols-outlined text-[10px]">
+                              event
+                            </span>
+                            {new Date(task.dueDate).toLocaleDateString()}
+                          </span>
+                        )}
+                        <span className="text-[10px] font-mono-code text-tertiary">
+                          Opened {new Date(task.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Badges & Actions */}
@@ -170,7 +287,9 @@ export default function ProjectTasksPage() {
                         className="text-on-surface-variant hover:text-error transition-colors p-1 rounded hover:bg-surface-container-highest"
                         title="Drop Task"
                       >
-                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                        <span className="material-symbols-outlined text-[16px]">
+                          delete
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -188,19 +307,31 @@ export default function ProjectTasksPage() {
 
               <div className="border border-outline-variant rounded-DEFAULT bg-surface-container overflow-hidden divide-y divide-outline-variant">
                 {completedTasks.map((task) => (
-                  <div key={task._id} className="flex items-center px-4 py-3 group bg-surface-container-lowest">
+                  <div
+                    key={task._id}
+                    className="flex items-center px-4 py-3 group bg-surface-container-lowest"
+                  >
                     {/* Reopen Checkbox */}
                     <button
-                      onClick={() => update.mutate({ taskId: task._id, updates: { status: "open" } })}
+                      onClick={() =>
+                        update.mutate({
+                          taskId: task._id,
+                          updates: { status: "open" },
+                        })
+                      }
                       className="w-6 h-6 shrink-0 border border-success bg-success/20 text-success rounded-sm flex items-center justify-center transition-colors hover:bg-success/30 mr-4"
                       title="Reopen Task"
                     >
-                      <span className="material-symbols-outlined text-[16px]">check</span>
+                      <span className="material-symbols-outlined text-[16px]">
+                        check
+                      </span>
                     </button>
 
                     {/* Content */}
                     <div className="flex-1 flex flex-col justify-center overflow-hidden pr-4">
-                      <span className="text-[13px] font-mono-code text-tertiary line-through truncate leading-tight">{task.title}</span>
+                      <span className="text-[13px] font-mono-code text-tertiary line-through truncate leading-tight">
+                        {task.title}
+                      </span>
                     </div>
 
                     {/* Actions */}
@@ -210,7 +341,9 @@ export default function ProjectTasksPage() {
                         className="text-on-surface-variant hover:text-error transition-colors p-1 rounded hover:bg-surface-container-highest"
                         title="Drop permanently"
                       >
-                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                        <span className="material-symbols-outlined text-[16px]">
+                          delete
+                        </span>
                       </button>
                     </div>
                   </div>

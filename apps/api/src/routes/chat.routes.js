@@ -4,9 +4,11 @@ import { authorizeProject } from "../middlewares/authorize-project.js";
 import { validateBody } from "../middlewares/validate.js";
 import {
   ask,
+  deleteConversation,
   getConversation,
   listConversations,
 } from "../services/chat.service.js";
+import { logActivity } from "../services/activity.service.js";
 const router = Router({ mergeParams: true });
 const schema = z.object({
   content: z.string().trim().min(1).max(12_000),
@@ -21,14 +23,18 @@ router.post(
   validateBody(schema),
   async (req, res, next) => {
     try {
-      res.json(
-        await ask(
-          req.params.projectId,
-          req.auth.sub,
-          req.body.conversationId,
-          req.body.content,
-        ),
+      const result = await ask(
+        req.params.projectId,
+        req.auth.sub,
+        req.body.conversationId,
+        req.body.content,
       );
+      logActivity(req.params.projectId, req.auth.sub, "chat_message", {
+        entityType: "conversation",
+        entityId: result.conversation._id,
+        metadata: { preview: req.body.content.slice(0, 80) },
+      }).catch(() => {});
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -59,4 +65,20 @@ router.get("/:conversationId", authorizeProject(), async (req, res, next) => {
     next(error);
   }
 });
+router.delete(
+  "/:conversationId",
+  authorizeProject(),
+  async (req, res, next) => {
+    try {
+      await deleteConversation(
+        req.params.projectId,
+        req.auth.sub,
+        req.params.conversationId,
+      );
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 export default router;

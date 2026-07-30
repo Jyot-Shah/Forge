@@ -184,3 +184,16 @@ export async function deleteDocument(projectId, documentId) {
 
   return document;
 }
+
+export async function renameDocument(projectId, documentId, newName) {
+  const document = await SourceDocument.findOne({
+    _id: documentId,
+    projectId,
+    deletedAt: null,
+  });
+  if (!document)
+    throw new AppError(404, "DOCUMENT_NOT_FOUND", "Document not found.");
+  document.originalFilename = newName;
+  await document.save();
+  return document;
+}

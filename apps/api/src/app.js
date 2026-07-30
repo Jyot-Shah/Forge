@@ -13,6 +13,7 @@ import chatRoutes from "./routes/chat.routes.js";
 import memoryRoutes from "./routes/memory.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import taskRoutes from "./routes/task.routes.js";
+import activityRoutes from "./routes/activity.routes.js";
 
 export function createApp() {
   const app = express();
@@ -34,6 +35,11 @@ export function createApp() {
   app.use("/api/v1/projects/:projectId/memories", authenticate, memoryRoutes);
   app.use("/api/v1/projects/:projectId/search", authenticate, searchRoutes);
   app.use("/api/v1/projects/:projectId/tasks", authenticate, taskRoutes);
+  app.use(
+    "/api/v1/projects/:projectId/activities",
+    authenticate,
+    activityRoutes,
+  );
   app.use(notFoundHandler);
   app.use(errorHandler);
   return app;

@@ -15,9 +15,16 @@ export const loginSchema = z.object({
   password: z.string().min(1).max(128),
 });
 
+export const aiSettingsSchema = z.object({
+  model: z.string().min(1).max(100).optional(),
+  temperature: z.number().min(0).max(2).optional(),
+  maxTokens: z.number().min(1).max(32000).optional(),
+});
+
 export const createProjectSchema = z.object({
   name: z.string().trim().min(1).max(120),
   description: z.string().trim().max(1000).optional().default(""),
+  aiSettings: aiSettingsSchema.optional(),
 });
 
 export const updateProjectSchema = createProjectSchema

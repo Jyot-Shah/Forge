@@ -19,6 +19,11 @@ const schema = new mongoose.Schema(
       enum: ["low", "medium", "high"],
       default: "medium",
     },
+    category: {
+      type: String,
+      enum: ["general", "bug", "feature", "refactor", "design"],
+      default: "general",
+    },
     dueDate: { type: Date },
   },
   {

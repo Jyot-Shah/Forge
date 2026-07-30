@@ -10,6 +10,11 @@ const projectSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    aiSettings: {
+      model: { type: String, default: "gemini-2.5-flash" },
+      temperature: { type: Number, default: 0.7 },
+      maxTokens: { type: Number, default: 2048 },
+    },
     archivedAt: Date,
   },
   { timestamps: true, versionKey: false },

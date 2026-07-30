@@ -19,7 +19,6 @@ function normalizeVector(values) {
   return values.map((value) => value / magnitude);
 }
 
-
 function buildEmbeddingPrompt(text, purpose) {
   return purpose === "document"
     ? `Represent this project document for retrieval.\n\n${text}`
@@ -54,18 +53,32 @@ export async function embedText(text, purpose) {
   return normalizeVector(values);
 }
 
-export async function generateText(contents, systemInstruction) {
+export async function generateText(
+  contents,
+  systemInstruction,
+  aiSettings = {},
+) {
   const models = [
-    ...new Set([environment.GEMINI_CHAT_MODEL, ...FALLBACK_CHAT_MODELS]),
+    ...new Set([
+      ...(aiSettings.model ? [aiSettings.model] : []),
+      environment.GEMINI_CHAT_MODEL,
+      ...FALLBACK_CHAT_MODELS,
+    ]),
   ];
   let lastError;
 
   for (const model of models) {
     try {
+      const config = { systemInstruction };
+      if (aiSettings.temperature !== undefined)
+        config.temperature = aiSettings.temperature;
+      if (aiSettings.maxTokens !== undefined)
+        config.maxOutputTokens = aiSettings.maxTokens;
+
       const response = await getGemini().models.generateContent({
         model,
         contents,
-        config: { systemInstruction },
+        config,
       });
       let text =
         response.text?.trim() ||

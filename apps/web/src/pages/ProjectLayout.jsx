@@ -27,13 +27,35 @@ export default function ProjectLayout() {
   const project = projectQuery.data;
 
   const navItems = [
-    { to: `/projects/${projectId}`, label: "Dashboard", icon: "dashboard", end: true },
-    { to: `/projects/${projectId}/documents`, label: "Library", icon: "local_library" },
+    {
+      to: `/projects/${projectId}`,
+      label: "Dashboard",
+      icon: "dashboard",
+      end: true,
+    },
+    {
+      to: `/projects/${projectId}/documents`,
+      label: "Library",
+      icon: "local_library",
+    },
     { to: `/projects/${projectId}/search`, label: "Search", icon: "search" },
     { to: `/projects/${projectId}/tasks`, label: "Tasks", icon: "checklist" },
     { to: `/projects/${projectId}/chat`, label: "Chat", icon: "forum" },
-    { to: `/projects/${projectId}/memories`, label: "Memory", icon: "neurology" },
-    { to: `/projects/${projectId}/settings`, label: "Settings", icon: "settings" },
+    {
+      to: `/projects/${projectId}/memories`,
+      label: "Memory",
+      icon: "neurology",
+    },
+    {
+      to: `/projects/${projectId}/activity`,
+      label: "Activity",
+      icon: "timeline",
+    },
+    {
+      to: `/projects/${projectId}/settings`,
+      label: "Settings",
+      icon: "settings",
+    },
   ];
 
   return (
@@ -44,8 +66,12 @@ export default function ProjectLayout() {
         <Link to="/projects" className="flex items-center gap-3">
           <ForgeLogo className="w-7 h-7" />
           <div>
-            <h1 className="font-mono-label text-mono-label font-bold text-primary uppercase tracking-widest">Forge</h1>
-            <p className="font-body-sm text-[11px] text-on-surface-variant max-w-[140px] truncate">{project?.name}</p>
+            <h1 className="font-mono-label text-mono-label font-bold text-primary uppercase tracking-widest">
+              Forge
+            </h1>
+            <p className="font-body-sm text-[11px] text-on-surface-variant max-w-[140px] truncate">
+              {project?.name}
+            </p>
           </div>
         </Link>
         <div className="flex items-center gap-2">
@@ -54,7 +80,9 @@ export default function ProjectLayout() {
             className="p-2 text-on-surface-variant hover:text-primary rounded level-1 border border-outline-variant focus:outline-none"
             aria-label="Toggle Navigation Menu"
           >
-            <span className="material-symbols-outlined text-[20px]">{mobileMenuOpen ? "close" : "menu"}</span>
+            <span className="material-symbols-outlined text-[20px]">
+              {mobileMenuOpen ? "close" : "menu"}
+            </span>
           </button>
         </div>
       </header>
@@ -62,7 +90,9 @@ export default function ProjectLayout() {
       {/* SideNavBar (Desktop & Mobile Drawer) */}
       <nav
         className={`fixed md:static inset-y-0 left-0 w-60 bg-surface-container-low border-r border-outline-variant flex flex-col justify-between py-4 gap-2 z-40 transition-transform duration-200 ease-in-out ${
-          mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          mobileMenuOpen
+            ? "translate-x-0"
+            : "-translate-x-full md:translate-x-0"
         }`}
       >
         <div>
@@ -74,8 +104,13 @@ export default function ProjectLayout() {
           >
             <ForgeLogo className="w-8 h-8 group-hover:scale-105 transition-transform" />
             <div>
-              <h1 className="font-mono-label text-mono-label font-bold text-primary uppercase tracking-widest group-hover:text-white">Forge</h1>
-              <p className="font-body-sm text-body-sm text-on-surface-variant font-medium max-w-[120px] truncate" title={project?.name || "Project"}>
+              <h1 className="font-mono-label text-mono-label font-bold text-primary uppercase tracking-widest group-hover:text-white">
+                Forge
+              </h1>
+              <p
+                className="font-body-sm text-body-sm text-on-surface-variant font-medium max-w-[120px] truncate"
+                title={project?.name || "Project"}
+              >
                 {project?.name || "Workspace"}
               </p>
             </div>
@@ -97,7 +132,9 @@ export default function ProjectLayout() {
                   }`
                 }
               >
-                <span className="material-symbols-outlined text-[18px]">{item.icon}</span>
+                <span className="material-symbols-outlined text-[18px]">
+                  {item.icon}
+                </span>
                 {item.label}
               </NavLink>
             ))}
@@ -110,7 +147,9 @@ export default function ProjectLayout() {
           <div className="px-3 py-2 level-2 rounded-DEFAULT flex items-center justify-between border border-outline-variant/40">
             <div className="flex items-center gap-2 overflow-hidden">
               <div className="w-6 h-6 rounded-full bg-primary text-on-primary font-mono-label text-[10px] font-bold flex items-center justify-center shrink-0">
-                {(user?.displayName || user?.email || "U").charAt(0).toUpperCase()}
+                {(user?.displayName || user?.email || "U")
+                  .charAt(0)
+                  .toUpperCase()}
               </div>
               <div className="overflow-hidden">
                 <p className="font-mono-label text-[11px] text-primary truncate">
@@ -126,7 +165,9 @@ export default function ProjectLayout() {
               className="text-on-surface-variant hover:text-error transition p-1 rounded"
               title="Sign Out"
             >
-              <span className="material-symbols-outlined text-[16px]">logout</span>
+              <span className="material-symbols-outlined text-[16px]">
+                logout
+              </span>
             </button>
           </div>
 
@@ -135,7 +176,9 @@ export default function ProjectLayout() {
             className="flex items-center justify-between px-3 py-1.5 level-1 rounded-DEFAULT text-on-surface-variant hover:text-primary font-mono-label text-[11px] transition border border-outline-variant/30"
           >
             <span className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[14px]">swap_horiz</span>
+              <span className="material-symbols-outlined text-[14px]">
+                swap_horiz
+              </span>
               Switch Project
             </span>
             <span className="text-[9px] text-outline">ESC</span>

@@ -11,6 +11,20 @@ const schema = new mongoose.Schema(
       enum: ["fact", "decision", "convention", "preference", "task", "summary"],
       required: true,
     },
+    category: {
+      type: String,
+      enum: [
+        "fact",
+        "preference",
+        "decision",
+        "framework",
+        "coding_style",
+        "deadline",
+        "task",
+        "goal",
+      ],
+      default: "fact",
+    },
     content: { type: String, required: true, maxlength: 2000 },
     confidence: { type: Number, min: 0, max: 1, required: true },
     status: {

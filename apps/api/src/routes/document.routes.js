@@ -12,7 +12,10 @@ import {
   listDocuments,
   reprocessDocument,
   getDocumentDetails,
+  renameDocument,
 } from "../services/document.service.js";
+import { logActivity } from "../services/activity.service.js";
+import { z } from "zod";
 import { environment } from "../config/environment.js";
 const router = Router({ mergeParams: true });
 const uploadTmpDir = path.resolve(
@@ -48,15 +51,17 @@ router.post(
   upload.single("file"),
   async (req, res, next) => {
     try {
-      res
-        .status(202)
-        .json({
-          document: await createDocument(
-            req.params.projectId,
-            req.auth.sub,
-            req.file,
-          ),
-        });
+      const document = await createDocument(
+        req.params.projectId,
+        req.auth.sub,
+        req.file,
+      );
+      logActivity(req.params.projectId, req.auth.sub, "document_upload", {
+        entityType: "document",
+        entityId: document._id,
+        metadata: { filename: document.originalFilename },
+      }).catch(() => {});
+      res.status(202).json({ document });
     } catch (error) {
       next(error);
     }
@@ -67,14 +72,12 @@ router.post(
   requireProjectEditor,
   async (req, res, next) => {
     try {
-      res
-        .status(202)
-        .json({
-          document: await reprocessDocument(
-            req.params.projectId,
-            req.params.documentId,
-          ),
-        });
+      res.status(202).json({
+        document: await reprocessDocument(
+          req.params.projectId,
+          req.params.documentId,
+        ),
+      });
     } catch (error) {
       next(error);
     }
@@ -83,9 +86,32 @@ router.post(
 router.delete("/:documentId", requireProjectEditor, async (req, res, next) => {
   try {
     await deleteDocument(req.params.projectId, req.params.documentId);
+    logActivity(req.params.projectId, req.auth.sub, "document_delete", {
+      entityType: "document",
+      entityId: req.params.documentId,
+    }).catch(() => {});
     res.status(204).send();
   } catch (error) {
     next(error);
   }
 });
+
+const editSchema = z.object({
+  originalFilename: z.string().trim().min(1),
+});
+
+router.patch("/:documentId", requireProjectEditor, async (req, res, next) => {
+  try {
+    const { originalFilename } = editSchema.parse(req.body);
+    const document = await renameDocument(
+      req.params.projectId,
+      req.params.documentId,
+      originalFilename,
+    );
+    res.json({ document });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
