@@ -196,7 +196,7 @@ export default function ProjectDashboardPage() {
             </Link>
           </div>
           <div className="space-y-3 flex-1">
-            {stats.latestDocuments.length ? (
+            {stats?.latestDocuments?.length ? (
               stats.latestDocuments.map((doc) => (
                 <div
                   key={doc._id}
@@ -253,29 +253,30 @@ export default function ProjectDashboardPage() {
             </span>
           </div>
           <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[11px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-outline-variant/30 before:to-transparent">
-            {stats.latestConversations.length ? (
+            {stats?.latestConversations?.length ? (
               stats.latestConversations.map((conv, i) => (
-                <div
+                <Link
                   key={conv._id}
-                  className="relative flex items-start gap-4 z-10 pl-8 md:pl-0"
+                  to={`/projects/${projectId}/chat?c=${conv._id}`}
+                  className="relative flex items-start gap-4 z-10 pl-8 md:pl-0 group rounded transition-colors hover:bg-surface-container/50 cursor-pointer p-2 -ml-2 select-none"
                 >
                   <div
-                    className={`absolute left-0 md:left-1/2 md:-translate-x-1/2 w-2 h-2 rounded-full mt-1.5 border ${i === 0 ? "bg-tertiary shadow-[0_0_8px_rgba(255,255,255,0.5)]" : "bg-outline-variant border-surface-container-high"}`}
+                    className={`absolute left-0 md:left-1/2 md:-translate-x-1/2 w-2 h-2 rounded-full mt-1.5 border transition-all duration-300 ${i === 0 ? "bg-tertiary shadow-[0_0_8px_rgba(255,255,255,0.5)] group-hover:scale-125" : "bg-outline-variant border-surface-container-high group-hover:bg-primary"}`}
                   ></div>
                   <div className="md:w-1/2 md:pr-8 md:text-right md:flex-shrink-0 hidden md:block">
-                    <p className="font-mono-code text-mono-code text-on-surface-variant text-[11px]">
+                    <p className="font-mono-code text-mono-code text-on-surface-variant text-[11px] group-hover:text-primary transition-colors">
                       {new Date(conv.updatedAt).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="flex-1 md:w-1/2 md:pl-8">
-                    <p className="font-body-sm text-body-sm text-primary line-clamp-1">
+                    <p className="font-body-sm text-body-sm text-primary line-clamp-1 group-hover:underline">
                       {conv.title}
                     </p>
-                    <p className="font-mono-code text-mono-code text-on-surface-variant text-[10px] mt-1 md:hidden">
+                    <p className="font-mono-code text-mono-code text-on-surface-variant text-[10px] mt-1 md:hidden group-hover:text-primary transition-colors">
                       {new Date(conv.updatedAt).toLocaleDateString()}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))
             ) : (
               <p className="text-sm font-mono-code text-on-surface-variant">

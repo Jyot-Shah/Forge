@@ -60,11 +60,6 @@ export default function ProjectSettingsPage() {
     update.mutate({
       name: name.trim(),
       description: description.trim(),
-      aiSettings: {
-        model: aiModel,
-        temperature: Number(temperature),
-        maxTokens: Number(maxTokens),
-      },
     });
   }
 
@@ -119,66 +114,6 @@ export default function ProjectSettingsPage() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Architectural overview and technical scope..."
             />
-          </div>
-        </div>
-
-        <div className="pt-6 border-t border-outline-variant/50">
-          <h3 className="font-headline-lg text-headline-lg font-semibold text-primary mb-1">
-            AI Engine Configuration
-          </h3>
-          <p className="font-body-sm text-body-sm text-on-surface-variant mb-4">
-            Tune generative model parameterization for contextual queries.
-          </p>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider mb-1">
-                Base Model
-              </label>
-              <select
-                className="forge-input py-2.5 cursor-pointer"
-                value={aiModel}
-                onChange={(e) => setAiModel(e.target.value)}
-              >
-                <option value="gemini-2.5-flash">
-                  Gemini 2.5 Flash (Fast, General Purpose)
-                </option>
-                <option value="gemini-2.5-pro">
-                  Gemini 2.5 Pro (Complex Reasoning)
-                </option>
-              </select>
-            </div>
-            <div>
-              <label className="block font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider mb-1">
-                Temperature ({temperature})
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="2"
-                step="0.1"
-                className="w-full accent-primary mt-2"
-                value={temperature}
-                onChange={(e) => setTemperature(parseFloat(e.target.value))}
-              />
-              <p className="font-mono-code text-[11px] text-tertiary mt-1 text-center">
-                Lower controls deterministic logic; higher creates variation.
-              </p>
-            </div>
-            <div>
-              <label className="block font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider mb-1">
-                Max Output Tokens
-              </label>
-              <input
-                type="number"
-                min="100"
-                max="8192"
-                step="100"
-                className="forge-input"
-                value={maxTokens}
-                onChange={(e) => setMaxTokens(parseInt(e.target.value))}
-              />
-            </div>
           </div>
         </div>
 

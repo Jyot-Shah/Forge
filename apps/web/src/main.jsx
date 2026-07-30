@@ -12,7 +12,6 @@ import ProjectMemoryPage from "./pages/ProjectMemoryPage.jsx";
 import ProjectSearchPage from "./pages/ProjectSearchPage.jsx";
 import ProjectTasksPage from "./pages/ProjectTasksPage.jsx";
 import ProjectDocumentPage from "./pages/ProjectDocumentPage.jsx";
-import ProjectActivityPage from "./pages/ProjectActivityPage.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
@@ -63,7 +62,6 @@ createRoot(document.getElementById("root")).render(
                 <Route path="tasks" element={<ProjectTasksPage />} />
                 <Route path="chat" element={<ChatPage />} />
                 <Route path="memories" element={<ProjectMemoryPage />} />
-                <Route path="activity" element={<ProjectActivityPage />} />
                 <Route path="settings" element={<ProjectSettingsPage />} />
               </Route>
 

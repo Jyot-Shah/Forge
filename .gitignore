@@ -26,7 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # Stitch & Editor temp files
-PRD.md
 .stitch_*.html
 .agents/
 .vscode/

@@ -47,11 +47,6 @@ export default function ProjectLayout() {
       icon: "neurology",
     },
     {
-      to: `/projects/${projectId}/activity`,
-      label: "Activity",
-      icon: "timeline",
-    },
-    {
       to: `/projects/${projectId}/settings`,
       label: "Settings",
       icon: "settings",

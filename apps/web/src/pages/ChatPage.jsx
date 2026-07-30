@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { api } from "../api/client.js";
 
@@ -14,8 +14,11 @@ function roleLabel(role) {
 
 export default function ChatPage() {
   const { projectId } = useParams();
+  const [searchParams] = useSearchParams();
   const [messages, setMessages] = useState([]);
-  const [conversationId, setConversationId] = useState(null);
+  const [conversationId, setConversationId] = useState(
+    searchParams.get("c") || null,
+  );
   const [activeConversation, setActiveConversation] = useState(null);
   const [text, setText] = useState("");
   const [error, setError] = useState("");
