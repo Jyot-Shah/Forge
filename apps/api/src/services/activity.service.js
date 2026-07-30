@@ -1,4 +1,4 @@
-import { Activity } from "@forge/persistence";
+import { Activity } from "@forge/persistence/models";
 
 export async function logActivity(
   projectId,

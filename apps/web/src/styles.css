@@ -130,6 +130,16 @@ body {
 .level-1 {
   background-color: #121214;
   border: 1px solid #27272a;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.level-1:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.7);
+  border-color: #3f3f46;
 }
 
 .level-2 {
@@ -138,31 +148,39 @@ body {
 }
 
 .sparkline-up {
-  background: linear-gradient(90deg,
-      rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.2) 100%);
-  clip-path: polygon(0 100%,
-      0 80%,
-      20% 70%,
-      40% 85%,
-      60% 40%,
-      80% 50%,
-      100% 20%,
-      100% 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  clip-path: polygon(
+    0 100%,
+    0 80%,
+    20% 70%,
+    40% 85%,
+    60% 40%,
+    80% 50%,
+    100% 20%,
+    100% 100%
+  );
 }
 
 .sparkline-down {
-  background: linear-gradient(90deg,
-      rgba(255, 255, 255, 0.2) 0%,
-      rgba(255, 255, 255, 0.05) 100%);
-  clip-path: polygon(0 100%,
-      0 30%,
-      20% 50%,
-      40% 40%,
-      60% 70%,
-      80% 60%,
-      100% 90%,
-      100% 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  clip-path: polygon(
+    0 100%,
+    0 30%,
+    20% 50%,
+    40% 40%,
+    60% 70%,
+    80% 60%,
+    100% 90%,
+    100% 100%
+  );
 }
 
 .forge-input,
@@ -186,6 +204,8 @@ body {
 .forge-input:focus,
 .forge-textarea:focus {
   border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 .forge-button {
@@ -203,13 +223,17 @@ body {
   line-height: 16px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  transition: transform 160ms ease, background 160ms ease;
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
   padding: 0.5rem 1rem;
   cursor: pointer;
 }
 
 .forge-button:hover {
   background: #e2e2e2;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
 }
 
 .forge-button:disabled {
@@ -242,6 +266,7 @@ body {
 .ghost-button:hover {
   background: #121214;
   color: #ffffff;
+  transform: scale(1.02);
 }
 
 .status-chip {
@@ -302,4 +327,56 @@ body {
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+/* === Global Watermark & Dynamic FX === */
+.forge-watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50vw;
+  height: 50vw;
+  max-width: 800px;
+  max-height: 800px;
+  transform: translate(-50%, -50%);
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
+  animation: watermark-pulse-subtle 8s infinite alternate ease-in-out;
+}
+
+.landing-page-intro .forge-watermark {
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+.landing-page-active .forge-watermark {
+  opacity: 0.15;
+  animation: watermark-pulse-strong 8s infinite alternate ease-in-out;
+}
+
+@keyframes watermark-pulse-subtle {
+  0% {
+    transform: translate(-50%, -50%) scale(1) translateY(0);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0));
+    opacity: 0.05;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.03) translateY(-10px);
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
+    opacity: 0.08;
+  }
+}
+
+@keyframes watermark-pulse-strong {
+  0% {
+    transform: translate(-50%, -50%) scale(1) translateY(0);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0));
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.03) translateY(-10px);
+    filter: drop-shadow(0 0 35px rgba(255, 255, 255, 0.2));
+    opacity: 0.3;
+  }
 }

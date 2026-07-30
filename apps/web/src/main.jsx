@@ -14,6 +14,7 @@ import ProjectTasksPage from "./pages/ProjectTasksPage.jsx";
 import ProjectDocumentPage from "./pages/ProjectDocumentPage.jsx";
 import ProjectActivityPage from "./pages/ProjectActivityPage.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
@@ -32,7 +33,7 @@ createRoot(document.getElementById("root")).render(
         <BrowserRouter>
           <Routes>
             <Route element={<App />}>
-              <Route path="/" element={<Navigate to="/projects" replace />} />
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route

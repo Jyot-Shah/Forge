@@ -1,14 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Forge — AI-powered developer workspace with persistent memory, semantic retrieval, and intelligent context engineering for software projects." />
-    <title>Forge Workspace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <meta
+      name="description"
+      content="Forge — AI-powered developer workspace with persistent memory, semantic retrieval, and intelligent context engineering for software projects."
+    />
+    <title>Forge</title>
+    <link rel="icon" type="image/png" href="/forge_logo.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <div id="root"></div><script type="module" src="/src/main.jsx"></script>
+    <video
+      id="forge-watermark-video"
+      class="forge-watermark"
+      autoplay
+      playsinline
+    >
+      <source src="/watermark%20video.mp4" type="video/mp4" />
+    </video>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const video = document.getElementById("forge-watermark-video");
+        if (video) {
+          // Attempt to play with sound once
+          video.muted = true; // Auto-play is much more reliable when starting muted! Let's just start it muted for the intro to guarantee perfect behavior on all browsers without blocking UI.
+          video.loop = false;
+
+          video.play().catch(() => {
+            // fallback
+            video.muted = true;
+            video.play();
+          });
+
+          video.onended = () => {
+            // Once finished playing, loop muted forever
+            video.loop = true;
+            video.play();
+          };
+        }
+      });
+    </script>
   </body>
 </html>

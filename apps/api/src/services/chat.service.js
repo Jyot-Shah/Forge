@@ -4,8 +4,8 @@ import {
   Memory,
   Message,
   SourceDocument,
-  Project,
 } from "@forge/persistence/models";
+import { Project } from "../models/project.model.js";
 import {
   embedText,
   generateText,

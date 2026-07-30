@@ -181,7 +181,6 @@ export default function ProjectLayout() {
               </span>
               Switch Project
             </span>
-            <span className="text-[9px] text-outline">ESC</span>
           </Link>
         </div>
       </nav>
