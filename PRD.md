@@ -529,24 +529,6 @@ Storage Settings
 Project Settings
 
 ==================================================
-AI PROVIDERS
-==================================================
-
-OpenAI
-
-Gemini
-
-Claude
-
-Future Support:
-
-OpenRouter
-
-Ollama
-
-vLLM
-
-==================================================
 RESPONSES
 ==================================================
 
@@ -609,50 +591,6 @@ Caching
 Rate Limiting
 
 Security Best Practices
-
-==================================================
-FUTURE FEATURES
-==================================================
-
-GitHub Integration
-
-Slack Integration
-
-Discord Integration
-
-Google Drive
-
-Notion
-
-Confluence
-
-Jira
-
-Multi-user Workspaces
-
-Role Based Access
-
-Plugin System
-
-MCP Support
-
-Workflow Builder
-
-Agent Builder
-
-Voice Conversations
-
-Vision Models
-
-Code Execution
-
-Multi-Agent Collaboration
-
-Offline Mode
-
-Desktop Application
-
-Mobile Application
 
 ==================================================
 SUCCESS METRICS
