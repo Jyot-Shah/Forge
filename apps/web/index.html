@@ -23,6 +23,8 @@
       id="forge-watermark-video"
       class="forge-watermark"
       autoplay
+      muted
+      loop
       playsinline
     >
       <source src="/watermark%20video.mp4" type="video/mp4" />
@@ -33,20 +35,15 @@
       window.addEventListener("DOMContentLoaded", () => {
         const video = document.getElementById("forge-watermark-video");
         if (video) {
-          // Attempt to play with sound once
-          video.muted = true; // Auto-play is much more reliable when starting muted! Let's just start it muted for the intro to guarantee perfect behavior on all browsers without blocking UI.
-          video.loop = false;
+          video.muted = true;
+          video.loop = false; // crucial for LandingPage.jsx intro timing!
 
-          video.play().catch(() => {
-            // fallback
-            video.muted = true;
-            video.play();
-          });
+          video.play().catch(() => {});
 
           video.onended = () => {
-            // Once finished playing, loop muted forever
+            video.muted = true;
             video.loop = true;
-            video.play();
+            video.play().catch(() => {});
           };
         }
       });

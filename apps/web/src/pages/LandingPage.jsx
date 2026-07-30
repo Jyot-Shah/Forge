@@ -16,24 +16,18 @@ export default function LandingPage() {
   const [isIntroFinished, setIsIntroFinished] = useState(false);
 
   useEffect(() => {
-    const video = document.getElementById("forge-watermark-video");
-    if (!video || video.loop) {
-      setIsIntroFinished(true);
-    } else {
-      document.body.classList.add("landing-page-intro");
-      const handleEnded = () => {
-        document.body.classList.remove("landing-page-intro");
-        setIsIntroFinished(true);
-      };
-      video.addEventListener("ended", handleEnded, { once: true });
-      const timeout = setTimeout(handleEnded, 8000); // safety fallback
+    document.body.classList.add("landing-page-intro");
 
-      return () => {
-        video.removeEventListener("ended", handleEnded);
-        clearTimeout(timeout);
-        document.body.classList.remove("landing-page-intro");
-      };
-    }
+    // Enforce exactly 4 seconds of ambient watermark video before UI fades in.
+    const introDelay = setTimeout(() => {
+      document.body.classList.remove("landing-page-intro");
+      setIsIntroFinished(true);
+    }, 4000);
+
+    return () => {
+      clearTimeout(introDelay);
+      document.body.classList.remove("landing-page-intro");
+    };
   }, []);
 
   const openDialog = (e, title, content) => {
@@ -130,7 +124,7 @@ export default function LandingPage() {
         .reveal-item {
           opacity: 0;
           transform: translateY(30px);
-          transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal-item.is-visible {
           opacity: 1;
@@ -148,7 +142,7 @@ export default function LandingPage() {
           100% { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in-up {
-          animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation: fade-in-up 2.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
       `}</style>
 
