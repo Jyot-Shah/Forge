@@ -22,7 +22,7 @@ import os from "node:os";
 const router = Router({ mergeParams: true });
 
 // Cloud-agnostic ephemeral storage for document uploads
-const uploadTmpDir = path.join(os.tmpdir(), "forge-uploads-tmp");
+const uploadTmpDir = path.join(process.cwd(), ".uploads/tmp");
 import fs from "node:fs";
 if (!fs.existsSync(uploadTmpDir)) {
   fs.mkdirSync(uploadTmpDir, { recursive: true });

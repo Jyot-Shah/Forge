@@ -14,9 +14,7 @@ import {
   COLLECTION,
 } from "../clients.js";
 
-import os from "node:os";
-
-const uploadRoot = path.join(os.tmpdir(), "forge-uploads-persist");
+const uploadRoot = path.join(process.cwd(), ".uploads/persist");
 
 function chunkText(text, size = 2400, overlap = 300) {
   const chunks = [];

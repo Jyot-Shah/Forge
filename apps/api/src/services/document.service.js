@@ -13,7 +13,7 @@ import { enqueueDocumentIngestion } from "../queues/ingestion.queue.js";
 
 import os from "node:os";
 
-const uploadRoot = path.join(os.tmpdir(), "forge-uploads-persist");
+const uploadRoot = path.join(process.cwd(), ".uploads/persist");
 
 function buildStorageKey(originalFilename) {
   return `${randomUUID()}-${originalFilename.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
