@@ -110,17 +110,26 @@ export async function ask(projectId, userId, conversationId, content) {
   try {
     await ensureDocumentCollection(qdrant);
     const vector = await embedText(content, "query");
-    const hits = await qdrant.search(DOCUMENT_COLLECTION, {
-      vector,
-      limit: 8,
-      filter: {
-        must: [
-          { key: "projectId", match: { value: String(projectId) } },
-          { key: "status", match: { value: "active" } },
-        ],
-      },
-      with_payload: true,
-    });
+    let hits = [];
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        hits = await qdrant.search(DOCUMENT_COLLECTION, {
+          vector,
+          limit: 8,
+          filter: {
+            must: [
+              { key: "projectId", match: { value: String(projectId) } },
+              { key: "status", match: { value: "active" } },
+            ],
+          },
+          with_payload: true,
+        });
+        break;
+      } catch (searchError) {
+        if (attempt === 4) throw searchError;
+        await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, attempt)));
+      }
+    }
     const chunksById = new Map(
       (
         await DocumentChunk.find({

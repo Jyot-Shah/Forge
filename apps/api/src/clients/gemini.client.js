@@ -29,25 +29,34 @@ function extractTextFromCandidates(response) {
     .trim();
 }
 
-export async function embedText(text, purpose) {
+export async function embedText(text, purpose, retries = 5) {
   const model = environment.GEMINI_EMBEDDING_MODEL;
   const config = { outputDimensionality: EMBEDDING_DIMENSIONS };
   const contents = buildEmbeddingPrompt(text, purpose);
-  const response = await getGemini().models.embedContent({
-    model,
-    contents,
-    config,
-  });
-  const values = response.embeddings?.[0]?.values;
-  if (!values?.length)
-    throw new Error("Embedding response did not include vector values.");
-  return normalizeVector(values);
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await getGemini().models.embedContent({
+        model,
+        contents,
+        config,
+      });
+      const values = response.embeddings?.[0]?.values;
+      if (!values?.length)
+        throw new Error("Embedding response did not include vector values.");
+      return normalizeVector(values);
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
+    }
+  }
 }
 
 export async function generateText(
   contents,
   systemInstruction,
   aiSettings = {},
+  retries = 5,
 ) {
   const model = environment.GEMINI_CHAT_MODEL;
 
@@ -57,19 +66,26 @@ export async function generateText(
   if (aiSettings.maxTokens !== undefined)
     config.maxOutputTokens = aiSettings.maxTokens;
 
-  const response = await getGemini().models.generateContent({
-    model,
-    contents,
-    config,
-  });
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await getGemini().models.generateContent({
+        model,
+        contents,
+        config,
+      });
 
-  let text =
-    response.text?.trim() ||
-    extractTextFromCandidates(response) ||
-    "I could not generate a response from the available evidence.";
+      let text =
+        response.text?.trim() ||
+        extractTextFromCandidates(response) ||
+        "I could not generate a response from the available evidence.";
 
-  if (text === "null") text = "I could not generate a response.";
-  return { text, model };
+      if (text === "null") text = "I could not generate a response.";
+      return { text, model };
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
+    }
+  }
 }
 
 export { EMBEDDING_DIMENSIONS };

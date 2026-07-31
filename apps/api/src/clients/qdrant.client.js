@@ -9,12 +9,24 @@ export function getQdrant() {
     checkCompatibility: false,
   });
 }
-export async function ensureDocumentCollection(client) {
-  try {
-    await client.getCollection(DOCUMENT_COLLECTION);
-  } catch {
-    await client.createCollection(DOCUMENT_COLLECTION, {
-      vectors: { size: 1536, distance: "Cosine" },
-    });
+export async function ensureDocumentCollection(client, retries = 5) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      try {
+        await client.getCollection(DOCUMENT_COLLECTION);
+      } catch (err) {
+        if (err.status === 404) {
+          await client.createCollection(DOCUMENT_COLLECTION, {
+            vectors: { size: 1536, distance: "Cosine" },
+          });
+        } else {
+          throw err;
+        }
+      }
+      return;
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
+    }
   }
 }

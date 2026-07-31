@@ -1,4 +1,5 @@
 import "./dns-fix.js";
+import "./fetch-polyfill.js";
 import { createApp } from "./app.js";
 import { connectDatabase, disconnectDatabase } from "./config/database.js";
 import { environment } from "./config/environment.js";
