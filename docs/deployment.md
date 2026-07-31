@@ -1,33 +1,35 @@
 # Forge Deployment & Operations Guide
 
-This guide covers local development setup with Docker Compose as well as production deployment strategies.
+This guide covers local development setup with Docker Compose.
 
 ---
 
 ## 1. Environment Configuration
 
-Copy `.env.example` to `.env` in the root folder and configure the required credentials:
+Create `.env` in the root folder and configure the required credentials:
 
 ```ini
 # Application Configuration
 PORT=4000
 NODE_ENV=production
-WEB_ORIGIN=https://your-app.vercel.app
+WEB_ORIGIN=http://localhost:5173
 
 # Database & Queue Connections
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/forge?retryWrites=true&w=majority
-REDIS_URL=redis://default:pass@redis-host:6379
+MONGODB_URI=mongodb://localhost:27017/forge
+REDIS_URL=redis://localhost:6379
 
 # Qdrant Vector Database
-QDRANT_URL=https://your-cluster.qdrant.tech:6333
-QDRANT_API_KEY=your-qdrant-api-key
+QDRANT_URL=http://localhost:6333
 
 # AI Provider Credentials
 GEMINI_API_KEY=your-google-gemini-api-key
 
 # Authentication Secrets
 JWT_ACCESS_SECRET=your-secure-access-secret-32-chars
-JWT_REFRESH_SECRET=your-secure-refresh-secret-32-chars
+
+JWT_ACCESS_TTL=15m
+REFRESH_TOKEN_TTL_DAYS=30
+MAX_UPLOAD_BYTES=10485760
 ```
 
 ---
@@ -57,21 +59,3 @@ npm run dev:web
 Access the application at `http://localhost:5173`.
 
 ---
-
-## 3. Production Deployment Strategy
-
-### Frontend (Vercel)
-1. Import `apps/web` into Vercel.
-2. Set Build Command: `npm run build`.
-3. Set Output Directory: `dist`.
-4. Configure environment variable `VITE_API_URL=https://your-api.onrender.com/api/v1`.
-
-### Backend API & Worker (Render / Docker Containers)
-The repository includes a root `render.yaml` manifest specifying dual container deployments:
-1. **API Web Service**: Deploys `apps/api` container with `PORT=4000`.
-2. **Worker Background Service**: Deploys `apps/worker` container running `node src/worker.js`.
-
-To verify production build locally:
-```bash
-npm run build --workspace=@forge/web
-```
