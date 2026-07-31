@@ -1,6 +1,6 @@
 import { PROJECT_ROLES } from "@forge/shared/constants";
 import { AppError } from "../errors/app-error.js";
-import { ProjectMembership } from "../models/project-membership.model.js";
+import { ProjectMembership } from "@forge/persistence/models";
 
 export function authorizeProject(...allowedRoles) {
   return async (request, _response, next) => {

@@ -1,5 +1,4 @@
-import "./dns-fix.js";
-import "./fetch-polyfill.js";
+import "@forge/shared/polyfills";
 import { createApp } from "./app.js";
 import { connectDatabase, disconnectDatabase } from "./config/database.js";
 import { environment } from "./config/environment.js";

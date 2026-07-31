@@ -3,8 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { environment } from "../config/environment.js";
 import { AppError } from "../errors/app-error.js";
-import { RefreshSession } from "../models/refresh-session.model.js";
-import { User } from "../models/user.model.js";
+import { RefreshSession, User } from "@forge/persistence/models";
 
 const hashToken = (token) => createHash("sha256").update(token).digest("hex");
 

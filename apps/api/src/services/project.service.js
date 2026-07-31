@@ -1,14 +1,14 @@
 import { PROJECT_ROLES } from "@forge/shared/constants";
 import mongoose from "mongoose";
 import { AppError } from "../errors/app-error.js";
-import { ProjectMembership } from "../models/project-membership.model.js";
-import { Project } from "../models/project.model.js";
 import {
   Conversation,
   DocumentChunk,
   Memory,
   Message,
   SourceDocument,
+  Project,
+  ProjectMembership,
 } from "@forge/persistence/models";
 
 export async function createProject(ownerId, input) {

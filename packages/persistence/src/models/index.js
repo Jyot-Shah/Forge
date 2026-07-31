@@ -6,3 +6,7 @@ export { DocumentChunk } from "./document-chunk.model.js";
 export { Conversation } from "./conversation.model.js";
 export { Message } from "./message.model.js";
 export { Memory } from "./memory.model.js";
+export { Project } from "./project.model.js";
+export { ProjectMembership } from "./project-membership.model.js";
+export { User } from "./user.model.js";
+export { RefreshSession } from "./refresh-session.model.js";

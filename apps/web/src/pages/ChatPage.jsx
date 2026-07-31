@@ -116,7 +116,6 @@ export default function ChatPage() {
 
   return (
     <section className="flex h-full bg-surface border border-outline-variant rounded-DEFAULT overflow-hidden">
-      {/* Sidebar: Conversation History */}
       <div
         className={`${sidebarOpen ? "fixed inset-0 z-30 md:static md:z-auto" : "hidden md:flex"} w-72 border-r border-outline-variant bg-surface-container-lowest flex-col shrink-0 md:flex`}
       >
@@ -203,7 +202,6 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface bg-grid-pattern">
         <header className="h-12 border-b border-outline-variant bg-surface-container/80 flex items-center px-4 justify-between shrink-0 backdrop-blur-md">
           <div className="flex items-center gap-2">
@@ -258,7 +256,6 @@ export default function ChatPage() {
           </div>
         </header>
 
-        {/* Message Thread */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 scrollbar-thin">
           {messages.length > 0 ? (
             messages.map((message, index) => (
@@ -373,7 +370,6 @@ export default function ChatPage() {
           <div ref={endRef} />
         </div>
 
-        {/* Console Input */}
         <form
           className="p-4 bg-surface-container-lowest border-t border-outline-variant"
           onSubmit={submit}

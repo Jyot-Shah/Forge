@@ -1,10 +1,10 @@
 import { DocumentChunk, Memory } from "@forge/persistence/models";
-import { embedText } from "../clients/gemini.client.js";
 import {
+  embedText,
   DOCUMENT_COLLECTION,
   ensureDocumentCollection,
   getQdrant,
-} from "../clients/qdrant.client.js";
+} from "@forge/shared/clients";
 
 export async function searchProject(projectId, query) {
   let lexical = [];
@@ -27,7 +27,9 @@ export async function searchProject(projectId, query) {
     const regex = new RegExp(escapedQuery, "i");
     [lexical, memories] = await Promise.all([
       DocumentChunk.find({ projectId, content: regex }).limit(20).lean(),
-      Memory.find({ projectId, status: "active", content: regex }).limit(10).lean(),
+      Memory.find({ projectId, status: "active", content: regex })
+        .limit(10)
+        .lean(),
     ]);
   }
 

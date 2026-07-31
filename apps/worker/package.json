@@ -9,12 +9,10 @@
   },
   "dependencies": {
     "@forge/persistence": "*",
-    "@google/genai": "^1.0.0",
-    "@qdrant/js-client-rest": "^1.13.0",
+    "@forge/shared": "*",
     "bullmq": "^5.34.10",
     "dotenv": "^16.4.7",
     "ioredis": "^5.4.2",
-    "mongoose": "^8.9.5",
-    "node-fetch": "^3.3.2"
+    "mongoose": "^8.9.5"
   }
 }

@@ -1,11 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
-import { environment } from "../config/environment.js";
 
 const EMBEDDING_DIMENSIONS = 1536;
 
 export function getGemini() {
-  if (!environment.GEMINI_API_KEY) throw new Error("Gemini is not configured.");
-  return new GoogleGenAI({ apiKey: environment.GEMINI_API_KEY });
+  if (!process.env.GEMINI_API_KEY) throw new Error("Gemini is not configured.");
+  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 }
 
 function normalizeVector(values) {
@@ -30,7 +29,7 @@ function extractTextFromCandidates(response) {
 }
 
 export async function embedText(text, purpose, retries = 5) {
-  const model = environment.GEMINI_EMBEDDING_MODEL;
+  const model = process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-2";
   const config = { outputDimensionality: EMBEDDING_DIMENSIONS };
   const contents = buildEmbeddingPrompt(text, purpose);
 
@@ -46,7 +45,10 @@ export async function embedText(text, purpose, retries = 5) {
         throw new Error("Embedding response did not include vector values.");
       return normalizeVector(values);
     } catch (error) {
-      if (i === retries - 1) throw error;
+      if (i === retries - 1) {
+        console.error("Gemini Embedding final retry failed:", error.message);
+        throw error;
+      }
       await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
     }
   }
@@ -58,7 +60,7 @@ export async function generateText(
   aiSettings = {},
   retries = 5,
 ) {
-  const model = environment.GEMINI_CHAT_MODEL;
+  const model = process.env.GEMINI_CHAT_MODEL || "gemini-3.6-flash";
 
   const config = { systemInstruction };
   if (aiSettings.temperature !== undefined)
@@ -82,7 +84,10 @@ export async function generateText(
       if (text === "null") text = "I could not generate a response.";
       return { text, model };
     } catch (error) {
-      if (i === retries - 1) throw error;
+      if (i === retries - 1) {
+        console.error("Gemini Chat final retry failed:", error.message);
+        throw error;
+      }
       await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
     }
   }

@@ -1,0 +1,16 @@
+apps\api\src\routes\document.routes.js
+apps\api\src\services\document.service.js
+apps\web\src\components\CommandPalette.jsx
+apps\web\src\context\AuthContext.jsx
+apps\web\src\pages\ChatPage.jsx
+apps\web\src\pages\LandingPage.jsx
+apps\web\src\pages\ProjectDashboardPage.jsx
+apps\web\src\pages\ProjectDocumentPage.jsx
+apps\web\src\pages\ProjectLayout.jsx
+apps\web\src\pages\ProjectMemoryPage.jsx
+apps\web\src\pages\ProjectSearchPage.jsx
+apps\web\src\pages\ProjectSettingsPage.jsx
+apps\web\src\pages\ProjectsPage.jsx
+apps\web\src\pages\ProjectTasksPage.jsx
+apps\web\src\pages\ProjectWorkspacePage.jsx
+apps\web\src\pages\RegisterPage.jsx

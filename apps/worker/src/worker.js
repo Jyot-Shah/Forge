@@ -1,5 +1,4 @@
-import "./dns-fix.js";
-import "./fetch-polyfill.js";
+import "@forge/shared/polyfills";
 import dotenv from "dotenv";
 import { fileURLToPath } from "node:url";
 import path from "node:path";

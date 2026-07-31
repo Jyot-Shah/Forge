@@ -56,7 +56,6 @@ export default function ProjectLayout() {
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden font-body-md text-body-md bg-background text-on-surface">
       <CommandPalette />
-      {/* Mobile Top Header */}
       <header className="md:hidden flex items-center justify-between px-4 py-3 bg-surface-container-low border-b border-outline-variant shrink-0 z-50">
         <Link to="/projects" className="flex items-center gap-3">
           <ForgeLogo className="w-7 h-7" />
@@ -82,7 +81,6 @@ export default function ProjectLayout() {
         </div>
       </header>
 
-      {/* SideNavBar (Desktop & Mobile Drawer) */}
       <nav
         className={`fixed md:static inset-y-0 left-0 w-60 bg-surface-container-low border-r border-outline-variant flex flex-col justify-between py-4 gap-2 z-40 transition-transform duration-200 ease-in-out ${
           mobileMenuOpen
@@ -91,7 +89,6 @@ export default function ProjectLayout() {
         }`}
       >
         <div>
-          {/* Header */}
           <Link
             to="/projects"
             className="px-5 pb-5 pt-1 mb-3 border-b border-outline-variant/40 hidden md:flex items-center gap-3 group hover:opacity-90 transition"
@@ -111,7 +108,6 @@ export default function ProjectLayout() {
             </div>
           </Link>
 
-          {/* Navigation Links */}
           <div className="px-3 space-y-1">
             {navItems.map((item) => (
               <NavLink
@@ -136,7 +132,6 @@ export default function ProjectLayout() {
           </div>
         </div>
 
-        {/* Footer User Profile & Workspace Controls */}
         <div className="px-3 pt-3 border-t border-outline-variant/40 space-y-2">
           {/* Logged in User Card */}
           <div className="px-3 py-2 level-2 rounded-DEFAULT flex items-center justify-between border border-outline-variant/40">
@@ -180,7 +175,6 @@ export default function ProjectLayout() {
         </div>
       </nav>
 
-      {/* Main Content Area */}
       <main className="flex-1 h-full overflow-y-auto bg-background">
         <div className="max-w-[1440px] mx-auto p-4 md:p-6 space-y-6">
           <Outlet context={{ project }} />

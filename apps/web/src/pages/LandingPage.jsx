@@ -18,7 +18,7 @@ export default function LandingPage() {
   useEffect(() => {
     document.body.classList.add("landing-page-intro");
 
-    // Enforce exactly 4 seconds of ambient watermark video before UI fades in.
+    // Enforce 4s ambient intro
     const introDelay = setTimeout(() => {
       document.body.classList.remove("landing-page-intro");
       setIsIntroFinished(true);
@@ -146,7 +146,6 @@ export default function LandingPage() {
         }
       `}</style>
 
-      {/* TopNavBar */}
       <nav
         ref={navbarRef}
         className="flex justify-between items-center h-14 px-4 md:px-6 w-full z-50 sticky top-0 border-b transition-all duration-300 transition-machined bg-surface/0 backdrop-blur-none border-transparent max-w-7xl mx-auto"
@@ -158,9 +157,7 @@ export default function LandingPage() {
           >
             Forge
           </Link>
-          <div className="hidden md:flex gap-6 items-center">
-            {/* Nav links removed per request */}
-          </div>
+          <div className="hidden md:flex gap-6 items-center"></div>
         </div>
         <div className="flex items-center gap-4">
           <Link
@@ -178,10 +175,8 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="flex-grow flex flex-col items-center w-full relative">
         <section className="w-full max-w-7xl mx-auto px-4 md:px-6 py-24 md:py-32 flex flex-col items-center justify-center relative overflow-hidden text-center min-h-[80vh]">
-          {/* Atmospheric Grid */}
           <div
             ref={bgRef}
             className="absolute inset-0 grid-bg opacity-40 -z-10 pointer-events-none animate-pulse-slow transition-transform duration-300 ease-out"
@@ -212,10 +207,8 @@ export default function LandingPage() {
 
         {isIntroFinished && (
           <>
-            {/* Features Bento Grid */}
             <section className="w-full max-w-7xl mx-auto px-4 md:px-6 py-24 border-t border-outline-variant/30 relative">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(180px,auto)]">
-                {/* Feature 1: Large */}
                 <div
                   ref={(el) => (revealRefs.current[0] = el)}
                   className="md:col-span-2 level-1 rounded-xl p-8 flex flex-col justify-between group reveal-item hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 hover:bg-surface-container-high"
@@ -257,7 +250,6 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Feature 2: Small */}
                 <div
                   ref={(el) => (revealRefs.current[1] = el)}
                   className="level-1 rounded-xl p-8 flex flex-col group reveal-item relative overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 hover:bg-surface-container-high"
@@ -285,7 +277,6 @@ export default function LandingPage() {
                   <div className="absolute bottom-0 left-0 w-full h-1/2 sparkline-up opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none"></div>
                 </div>
 
-                {/* Feature 3: Small */}
                 <div
                   ref={(el) => (revealRefs.current[2] = el)}
                   className="level-1 rounded-xl p-8 flex flex-col group reveal-item relative overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 hover:bg-surface-container-high"
@@ -318,7 +309,6 @@ export default function LandingPage() {
                   <div className="absolute bottom-0 left-0 w-full h-1/2 sparkline-down opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none"></div>
                 </div>
 
-                {/* Feature 4: Large */}
                 <div
                   ref={(el) => (revealRefs.current[3] = el)}
                   className="md:col-span-2 level-1 rounded-xl p-8 flex flex-col justify-between group reveal-item hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 hover:bg-surface-container-high"
@@ -362,7 +352,6 @@ export default function LandingPage() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0 items-center px-4 md:px-6 py-8 w-full max-w-7xl mx-auto border-t border-outline-variant bg-transparent text-on-surface-variant font-body-sm text-body-sm relative z-10">
         <div className="flex items-center justify-center md:justify-start gap-4">
           <span className="">
@@ -427,7 +416,6 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* Dynamic Pop-up Dialog */}
       {dialogConfig.isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in-up">
           <div className="level-1 interactive-panel rounded-xl max-w-md w-full p-8 relative border border-outline-variant shadow-2xl">

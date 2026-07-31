@@ -25,5 +25,5 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false },
 );
-schema.index({ projectId: 1, createdAt: -1 });
+schema.index({ projectId: 1, deletedAt: 1, createdAt: -1 });
 export const SourceDocument = mongoose.model("SourceDocument", schema);

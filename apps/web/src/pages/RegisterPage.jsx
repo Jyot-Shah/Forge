@@ -31,7 +31,6 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background text-on-surface">
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 level-1 rounded-DEFAULT border border-outline-variant overflow-hidden shadow-2xl">
-        {/* Left Side: Form */}
         <div className="p-8 md:p-10 flex flex-col justify-between bg-surface-container-low border-b md:border-b-0 md:border-r border-outline-variant">
           <div>
             <div className="flex items-center mb-6 border-none">
@@ -110,7 +109,6 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Right Side: Specifications */}
         <div className="p-8 md:p-10 flex flex-col justify-between bg-surface-container-lowest">
           <div>
             <div className="inline-block px-2 py-1 level-2 border border-outline-variant text-on-surface-variant font-mono-label text-mono-label uppercase tracking-widest mb-6">

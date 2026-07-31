@@ -73,6 +73,9 @@ router.post("/refresh", async (request, response, next) => {
       user: userPayload(result.user),
     });
   } catch (error) {
+    if (error.status === 401) {
+      response.clearCookie("forge_refresh", cookieOptions());
+    }
     next(error);
   }
 });

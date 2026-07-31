@@ -7,11 +7,11 @@ import {
   SourceDocument,
 } from "@forge/persistence/models";
 import {
-  ensureCollection,
-  embedDocument,
-  qdrant,
-  COLLECTION,
-} from "../clients.js";
+  ensureDocumentCollection,
+  embedText,
+  getQdrant,
+  DOCUMENT_COLLECTION,
+} from "@forge/shared/clients";
 
 function chunkText(text, size = 2400, overlap = 300) {
   const chunks = [];
@@ -73,8 +73,8 @@ export async function processDocumentIngestion({ documentId, versionId }) {
         contentHash: createHash("sha256").update(chunk.content).digest("hex"),
       })),
     );
-    const client = qdrant();
-    await ensureCollection(client);
+    const client = getQdrant();
+    await ensureDocumentCollection(client);
     const persisted = await DocumentChunk.find({
       documentVersionId: version.id,
     })
@@ -82,11 +82,11 @@ export async function processDocumentIngestion({ documentId, versionId }) {
       .lean();
     const embeddings = [];
     for (const chunk of persisted) {
-      embeddings.push(await embedDocument(chunk.content));
+      embeddings.push(await embedText(chunk.content, "document"));
     }
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
-        await client.upsert(COLLECTION, {
+        await client.upsert(DOCUMENT_COLLECTION, {
           wait: true,
           points: persisted.map((chunk, index) => ({
             id: toQdrantPointId(chunk._id),

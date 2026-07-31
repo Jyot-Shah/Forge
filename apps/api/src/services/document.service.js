@@ -7,7 +7,7 @@ import {
   DocumentVersion,
   SourceDocument,
 } from "@forge/persistence/models";
-import { DOCUMENT_COLLECTION, getQdrant } from "../clients/qdrant.client.js";
+import { DOCUMENT_COLLECTION, getQdrant } from "@forge/shared/clients";
 import { AppError } from "../errors/app-error.js";
 import { enqueueDocumentIngestion } from "../queues/ingestion.queue.js";
 
@@ -17,103 +17,102 @@ function buildStorageKey(originalFilename) {
 
 export async function createDocument(projectId, uploadedBy, file) {
   if (!file) throw new AppError(400, "FILE_REQUIRED", "A file is required.");
-  const extension = path.extname(file.originalname).toLowerCase();
-  const supportedExtensions = new Set([
-    ".txt",
-    ".md",
-    ".markdown",
-    ".json",
-    ".py",
-    ".js",
-    ".ts",
-    ".jsx",
-    ".tsx",
-    ".html",
-    ".css",
-    ".yaml",
-    ".yml",
-    ".csv",
-  ]);
-  const supportedMimeTypes = new Set([
-    "text/plain",
-    "text/markdown",
-    "text/x-markdown",
-    "application/json",
-    "text/json",
-    "text/javascript",
-    "application/javascript",
-    "text/x-python",
-    "text/css",
-    "text/html",
-    "application/octet-stream",
-  ]);
+  try {
+    const extension = path.extname(file.originalname).toLowerCase();
+    const supportedExtensions = new Set([
+      ".txt",
+      ".md",
+      ".markdown",
+      ".json",
+      ".py",
+      ".js",
+      ".ts",
+      ".jsx",
+      ".tsx",
+      ".html",
+      ".css",
+      ".yaml",
+      ".yml",
+      ".csv",
+    ]);
+    const supportedMimeTypes = new Set([
+      "text/plain",
+      "text/markdown",
+      "text/x-markdown",
+      "application/json",
+      "text/json",
+      "text/javascript",
+      "application/javascript",
+      "text/x-python",
+      "text/css",
+      "text/html",
+      "application/octet-stream",
+    ]);
 
-  if (
-    !supportedExtensions.has(extension) &&
-    !supportedMimeTypes.has(file.mimetype)
-  ) {
-    throw new AppError(
-      400,
-      "UNSUPPORTED_FILE_TYPE",
-      "Only text, Markdown, JSON, code, and configuration files are supported.",
-    );
+    if (
+      !supportedExtensions.has(extension) &&
+      !supportedMimeTypes.has(file.mimetype)
+    ) {
+      throw new AppError(
+        400,
+        "UNSUPPORTED_FILE_TYPE",
+        "Only text, Markdown, JSON, code, and configuration files are supported.",
+      );
+    }
+
+    const storageKey = buildStorageKey(file.originalname);
+
+    const contentHash = await new Promise((resolve, reject) => {
+      const hash = createHash("sha256");
+      const stream = fs.createReadStream(file.path);
+      stream.on("error", reject);
+      stream.on("data", (chunk) => hash.update(chunk));
+      stream.on("end", () => resolve(hash.digest("hex")));
+    });
+
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: "documents",
+    });
+    const uploadStream = bucket.openUploadStream(storageKey);
+    const gridFsId = uploadStream.id;
+
+    await new Promise((resolve, reject) => {
+      fs.createReadStream(file.path)
+        .pipe(uploadStream)
+        .on("error", reject)
+        .on("finish", resolve);
+    });
+
+    const document = await SourceDocument.create({
+      projectId,
+      uploadedBy,
+      originalFilename: file.originalname,
+      storageKey,
+      mimeType: file.mimetype,
+      byteSize: file.size,
+      contentHash,
+    });
+
+    const version = await DocumentVersion.create({
+      documentId: document.id,
+      projectId,
+      versionNumber: 1,
+      contentHash,
+      gridFsId,
+    });
+
+    document.latestVersionId = version.id;
+    await document.save();
+
+    await enqueueDocumentIngestion({
+      documentId: document.id,
+      versionId: version.id,
+    });
+
+    return document;
+  } finally {
+    fs.promises.unlink(file.path).catch(() => {});
   }
-
-  const storageKey = buildStorageKey(file.originalname);
-
-  // Compute file hash via stream to prevent OOM
-  const contentHash = await new Promise((resolve, reject) => {
-    const hash = createHash("sha256");
-    const stream = fs.createReadStream(file.path);
-    stream.on("error", reject);
-    stream.on("data", (chunk) => hash.update(chunk));
-    stream.on("end", () => resolve(hash.digest("hex")));
-  });
-
-  // Pipe directly to MongoDB GridFS bypassing API RAM completely
-  const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-    bucketName: "documents",
-  });
-  const uploadStream = bucket.openUploadStream(storageKey);
-  const gridFsId = uploadStream.id;
-
-  await new Promise((resolve, reject) => {
-    fs.createReadStream(file.path)
-      .pipe(uploadStream)
-      .on("error", reject)
-      .on("finish", resolve);
-  });
-
-  // Cleanup tmp file silently
-  fs.promises.unlink(file.path).catch(console.error);
-
-  const document = await SourceDocument.create({
-    projectId,
-    uploadedBy,
-    originalFilename: file.originalname,
-    storageKey,
-    mimeType: file.mimetype,
-    byteSize: file.size,
-    contentHash,
-  });
-
-  const version = await DocumentVersion.create({
-    documentId: document.id,
-    projectId,
-    versionNumber: 1,
-    contentHash,
-    gridFsId,
-  });
-
-  document.latestVersionId = version.id;
-  await document.save();
-
-  await enqueueDocumentIngestion({
-    documentId: document.id,
-    versionId: version.id,
-  });
-
-  return document;
 }
 
 export async function listDocuments(projectId) {
@@ -189,9 +188,9 @@ export async function deleteDocument(projectId, documentId) {
           must: [{ key: "documentId", match: { value: String(document.id) } }],
         },
       });
-      break; // Success
+      break;
     } catch (error) {
-      if (error.status === 404) break; // Already gone
+      if (error.status === 404) break;
       if (attempt === 4) {
         console.error(
           "Vector cleanup final retry failed; document is hidden but orphaned.",

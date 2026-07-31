@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import compression from "compression";
 import { environment } from "./config/environment.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler.js";
 import { authenticate } from "./middlewares/authenticate.js";
@@ -20,6 +21,7 @@ export function createApp() {
   app.disable("x-powered-by");
   app.use(requestContext);
   app.use(helmet());
+  app.use(compression());
   app.use(cors({ origin: environment.WEB_ORIGIN, credentials: true }));
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());

@@ -44,14 +44,15 @@ export default function ProjectDocumentPage() {
 
   return (
     <div className="space-y-6 flex flex-col h-full">
-      {/* Header Card */}
       <div className="level-1 rounded-DEFAULT p-6 md:p-8 space-y-4">
         <div className="flex items-center gap-3">
           <Link
             to={`/projects/${projectId}/documents`}
             className="font-mono-label text-mono-label text-primary hover:text-on-surface transition flex items-center gap-1"
           >
-            <span className="material-symbols-outlined text-[14px]">arrow_back</span>
+            <span className="material-symbols-outlined text-[14px]">
+              arrow_back
+            </span>
             Back to Library
           </Link>
         </div>
@@ -64,9 +65,7 @@ export default function ProjectDocumentPage() {
             <span className="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest block mb-1">
               Status
             </span>
-            <span className={statusChipClass}>
-              {status}
-            </span>
+            <span className={statusChipClass}>{status}</span>
           </div>
           <div className="px-4 py-2 level-2 rounded-DEFAULT border border-outline-variant">
             <span className="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest block mb-1">
@@ -95,16 +94,18 @@ export default function ProjectDocumentPage() {
         </div>
       </div>
 
-      {/* Chunks Section */}
       <div className="flex-1 space-y-4 pb-20">
         <h3 className="font-headline-lg text-headline-lg text-primary px-2">
           Knowledge Embeddings
         </h3>
         {!chunks || chunks.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center gap-2">
-            <span className="material-symbols-outlined text-outline text-4xl">data_array</span>
+            <span className="material-symbols-outlined text-outline text-4xl">
+              data_array
+            </span>
             <p className="font-mono-code text-mono-code text-on-surface-variant">
-              No readable knowledge chunks were successfully generated for this document yet.
+              No readable knowledge chunks were successfully generated for this
+              document yet.
             </p>
           </div>
         ) : (
@@ -115,9 +116,7 @@ export default function ProjectDocumentPage() {
                 className="level-1 flex flex-col p-5 rounded-DEFAULT border border-outline-variant space-y-3"
               >
                 <div className="flex justify-between items-center font-mono-label text-mono-label text-on-surface-variant mb-2 border-b border-outline-variant/30 pb-2">
-                  <span className="text-primary">
-                    Idx: {chunk.chunkIndex}
-                  </span>
+                  <span className="text-primary">Idx: {chunk.chunkIndex}</span>
                   <span>{chunk.tokenCount} tokens</span>
                 </div>
                 <div className="overflow-y-auto max-h-64 flex-1">

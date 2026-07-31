@@ -20,7 +20,6 @@ export default function ProjectDashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header Section */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-outline-variant/30">
         <div>
           <h2 className="font-headline-xl text-headline-xl text-primary tracking-tighter">
@@ -41,7 +40,6 @@ export default function ProjectDashboardPage() {
         </div>
       </header>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Stat Card 1 */}
         <div className="level-1 p-4 rounded-DEFAULT relative overflow-hidden group">
@@ -72,7 +70,6 @@ export default function ProjectDashboardPage() {
           <div className="absolute bottom-0 left-0 w-full h-1/2 sparkline-up opacity-30 group-hover:opacity-50 transition-opacity"></div>
         </div>
 
-        {/* Stat Card 2 */}
         <div className="level-1 p-4 rounded-DEFAULT relative overflow-hidden group">
           <div className="flex justify-between items-start z-10 relative">
             <div>
@@ -98,7 +95,6 @@ export default function ProjectDashboardPage() {
           <div className="absolute bottom-0 left-0 w-full h-1/2 sparkline-up opacity-20"></div>
         </div>
 
-        {/* Stat Card 3 */}
         <div className="level-1 p-4 rounded-DEFAULT relative overflow-hidden group">
           <div className="flex justify-between items-start z-10 relative">
             <div>
@@ -124,7 +120,6 @@ export default function ProjectDashboardPage() {
           <div className="absolute bottom-0 left-0 w-full h-1/2 sparkline-down opacity-30 group-hover:opacity-50 transition-opacity"></div>
         </div>
 
-        {/* Stat Card 4 */}
         <div className="level-1 p-4 rounded-DEFAULT relative overflow-hidden group">
           <div className="flex justify-between items-start z-10 relative">
             <div>
@@ -151,7 +146,6 @@ export default function ProjectDashboardPage() {
         </div>
       </div>
 
-      {/* Quick Command Bar */}
       <div
         className="level-1 rounded-DEFAULT p-4 flex items-center justify-between cursor-pointer hover:border-primary/50 transition-all group"
         onClick={() =>
@@ -177,7 +171,6 @@ export default function ProjectDashboardPage() {
         </kbd>
       </div>
 
-      {/* Main Bento Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Recent Projects (Takes up 2 columns on lg) */}
         <div className="lg:col-span-2 level-1 rounded-DEFAULT p-6 flex flex-col">
@@ -242,7 +235,6 @@ export default function ProjectDashboardPage() {
           </div>
         </div>
 
-        {/* Activity Feed (Takes 1 column) */}
         <div className="level-1 rounded-DEFAULT p-6 flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h3 className="font-headline-lg text-headline-lg text-primary tracking-tight">

@@ -21,7 +21,6 @@ import os from "node:os";
 
 const router = Router({ mergeParams: true });
 
-// Uses fast ephemeral OS tmp space instead of RAM to prevent OOM
 const upload = multer({
   dest: os.tmpdir(),
   limits: { fileSize: environment.MAX_UPLOAD_BYTES, files: 1 },

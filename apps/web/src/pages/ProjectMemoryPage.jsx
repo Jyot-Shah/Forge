@@ -49,7 +49,6 @@ export default function ProjectMemoryPage() {
 
   return (
     <div className="flex flex-col h-full bg-surface">
-      {/* Top Toolbar */}
       <header className="h-12 border-b border-outline-variant bg-surface-container-low flex items-center px-4 justify-between shrink-0">
         <div className="flex items-center gap-2 font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest">
           <span className="material-symbols-outlined text-[16px]">
@@ -59,7 +58,6 @@ export default function ProjectMemoryPage() {
         </div>
       </header>
 
-      {/* Main Container */}
       <div className="p-4 flex-1 overflow-y-auto space-y-6">
         {/* Title area */}
         <div className="flex justify-between items-end">
@@ -79,7 +77,6 @@ export default function ProjectMemoryPage() {
           </div>
         </div>
 
-        {/* Filters & Search */}
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-b border-outline-variant/50 pb-4">
           <div className="flex flex-wrap gap-2">
             {categories.map((cat) => (
@@ -154,7 +151,6 @@ export default function ProjectMemoryPage() {
                     key={memory._id}
                     className="level-2 hover:bg-surface-container-high transition-colors flex items-start px-4 py-3 group"
                   >
-                    {/* Class / Category */}
                     <div className="w-24 shrink-0 flex flex-col gap-1 items-start justify-start pt-1">
                       <span className="inline-flex items-center justify-center rounded-sm border border-outline-variant bg-surface-container-highest px-1.5 py-0.5 font-mono-label text-[10px] uppercase text-on-surface-variant w-min">
                         {memory.type}
@@ -164,17 +160,14 @@ export default function ProjectMemoryPage() {
                       </span>
                     </div>
 
-                    {/* Confidence */}
                     <div className="w-24 shrink-0 px-4 flex items-center pt-1 font-mono-code text-[12px] text-tertiary">
                       {Math.round((memory.confidence || 0) * 100)}%
                     </div>
 
-                    {/* Content */}
                     <div className="flex-1 px-4 text-[13px] font-mono-code text-primary leading-relaxed break-words whitespace-pre-wrap">
                       {memory.content}
                     </div>
 
-                    {/* Actions */}
                     <div className="w-20 shrink-0 text-right flex justify-end">
                       <button
                         onClick={() => {

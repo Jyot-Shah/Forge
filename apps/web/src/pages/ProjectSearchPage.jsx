@@ -23,7 +23,6 @@ export default function ProjectSearchPage() {
 
   return (
     <div className="flex flex-col h-full bg-surface">
-      {/* Top Toolbar */}
       <header className="h-12 border-b border-outline-variant bg-surface-container-low flex items-center px-4 justify-between shrink-0">
         <div className="flex items-center gap-2 font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest">
           <span className="material-symbols-outlined text-[16px]">search</span>
@@ -31,20 +30,24 @@ export default function ProjectSearchPage() {
         </div>
       </header>
 
-      {/* Main Container */}
       <div className="p-4 flex-1 overflow-y-auto space-y-6 pb-32">
         {/* Title area */}
         <div>
-          <h2 className="font-headline-xl text-headline-xl text-primary tracking-tighter">Hybrid Search Engine</h2>
+          <h2 className="font-headline-xl text-headline-xl text-primary tracking-tighter">
+            Hybrid Search Engine
+          </h2>
           <p className="mt-2 text-on-surface-variant max-w-2xl text-[13px] font-mono-code">
-            Uses Reciprocal Rank Fusion to combine the best results from both semantic embedding vectors and lexical text matching across documents and extracted memories.
+            Uses Reciprocal Rank Fusion to combine the best results from both
+            semantic embedding vectors and lexical text matching across
+            documents and extracted memories.
           </p>
         </div>
 
-        {/* Search Bar */}
         <form onSubmit={handleSubmit} className="flex gap-2 w-full max-w-4xl">
           <div className="flex-1 flex items-center bg-surface-container-lowest border border-outline-variant rounded focus-within:border-primary transition-colors">
-            <span className="material-symbols-outlined text-outline px-3">search</span>
+            <span className="material-symbols-outlined text-outline px-3">
+              search
+            </span>
             <input
               type="text"
               value={query}
@@ -70,8 +73,12 @@ export default function ProjectSearchPage() {
 
         {searchQuery.isError && (
           <div className="p-3 level-1 border-error/50 text-error font-mono-code text-[11px] rounded flex items-center gap-2 max-w-4xl">
-            <span className="material-symbols-outlined text-[14px]">warning</span>
-            Error: {searchQuery.error.response?.data?.error?.message || "Failed to perform hybrid search."}
+            <span className="material-symbols-outlined text-[14px]">
+              warning
+            </span>
+            Error:{" "}
+            {searchQuery.error.response?.data?.error?.message ||
+              "Failed to perform hybrid search."}
           </div>
         )}
 
@@ -81,12 +88,15 @@ export default function ProjectSearchPage() {
           !searchQuery.data?.memories?.length &&
           !searchQuery.data?.results?.length && (
             <div className="p-12 text-center flex flex-col items-center gap-3">
-              <span className="material-symbols-outlined text-outline text-4xl">search_off</span>
-              <p className="font-mono-code text-mono-code text-on-surface-variant">Zero semantic or lexical matches found for "{activeSearch}".</p>
+              <span className="material-symbols-outlined text-outline text-4xl">
+                search_off
+              </span>
+              <p className="font-mono-code text-mono-code text-on-surface-variant">
+                Zero semantic or lexical matches found for "{activeSearch}".
+              </p>
             </div>
           )}
 
-        {/* Extracted AI Memories */}
         {searchQuery.data?.memories?.length > 0 && (
           <div className="space-y-3 max-w-4xl">
             <div className="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/30 pb-2">
@@ -94,13 +104,18 @@ export default function ProjectSearchPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {searchQuery.data.memories.map((memory) => (
-                <div key={memory._id} className="level-1 p-4 rounded-DEFAULT flex flex-col relative overflow-hidden group">
+                <div
+                  key={memory._id}
+                  className="level-1 p-4 rounded-DEFAULT flex flex-col relative overflow-hidden group"
+                >
                   <div className="flex items-center justify-between z-10">
                     <span className="inline-flex items-center justify-center rounded-sm border border-outline-variant bg-surface-container-highest px-1.5 py-0.5 font-mono-label text-[10px] uppercase text-on-surface-variant w-min">
                       {memory.type}
                     </span>
                     <span className="text-[11px] font-mono-code text-tertiary flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[12px]">analytics</span>
+                      <span className="material-symbols-outlined text-[12px]">
+                        analytics
+                      </span>
                       {Math.round((memory.confidence || 0) * 100)}% Match
                     </span>
                   </div>
@@ -114,7 +129,6 @@ export default function ProjectSearchPage() {
           </div>
         )}
 
-        {/* Document References */}
         {searchQuery.data?.results?.length > 0 && (
           <div className="space-y-3 max-w-4xl mt-8">
             <div className="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/30 pb-2">
@@ -122,10 +136,15 @@ export default function ProjectSearchPage() {
             </div>
             <div className="space-y-3">
               {searchQuery.data.results.map((chunk, index) => (
-                <div key={chunk._id} className="level-1 rounded-DEFAULT overflow-hidden">
+                <div
+                  key={chunk._id}
+                  className="level-1 rounded-DEFAULT overflow-hidden"
+                >
                   <div className="flex justify-between items-center bg-surface-container border-b border-outline-variant px-3 py-2">
                     <span className="text-[11px] font-mono-code text-on-surface-variant flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">data_object</span>
+                      <span className="material-symbols-outlined text-[14px]">
+                        data_object
+                      </span>
                       Chunk ID: {chunk._id.slice(-8)}
                     </span>
                     <span className="text-[11px] font-mono-code text-tertiary">

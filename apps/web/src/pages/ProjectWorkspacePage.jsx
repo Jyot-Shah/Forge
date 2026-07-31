@@ -112,7 +112,6 @@ export default function ProjectWorkspacePage() {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      {/* Top Toolbar */}
       <header className="h-12 border-b border-outline-variant bg-surface-container-low flex items-center px-4 justify-between shrink-0">
         <div className="flex items-center gap-2 font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest">
           <span className="material-symbols-outlined text-[16px]">
@@ -141,9 +140,7 @@ export default function ProjectWorkspacePage() {
         </div>
       </header>
 
-      {/* Main Container */}
       <div className="p-4 flex-1 overflow-y-auto space-y-6">
-        {/* Search */}
         <div className="flex justify-start">
           <div className="relative w-full md:w-64">
             <span className="material-symbols-outlined absolute left-2.5 top-2 text-[18px] text-tertiary">
@@ -159,7 +156,6 @@ export default function ProjectWorkspacePage() {
           </div>
         </div>
 
-        {/* Upload Status Area */}
         {selectedFile && (
           <div className="level-1 p-3 rounded-DEFAULT border border-outline-variant flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -187,7 +183,6 @@ export default function ProjectWorkspacePage() {
           </div>
         )}
 
-        {/* Document List */}
         <div>
           <div className="h-10 px-4 bg-surface-container-low border border-outline-variant rounded-t-DEFAULT flex items-center font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest">
             <div className="w-1/2">File Structure</div>
@@ -213,7 +208,6 @@ export default function ProjectWorkspacePage() {
                       key={document._id}
                       className="level-2 hover:bg-surface-container-high transition-colors flex items-center px-4 py-3 group"
                     >
-                      {/* File Name */}
                       <div className="w-1/2 flex flex-col justify-center py-1">
                         <div className="flex items-center gap-3">
                           <span className="material-symbols-outlined text-[16px] text-primary">
@@ -296,7 +290,6 @@ export default function ProjectWorkspacePage() {
                         )}
                       </div>
 
-                      {/* Metadata */}
                       <div className="w-1/4 hidden md:flex flex-col">
                         <span className="font-mono-code text-mono-code text-[11px] text-on-surface-variant">
                           Size: {formatBytes(document.byteSize)}
@@ -306,7 +299,6 @@ export default function ProjectWorkspacePage() {
                         </span>
                       </div>
 
-                      {/* Status/Controls */}
                       <div className="w-1/2 md:w-1/4 flex items-center justify-end gap-4">
                         {document.error ? (
                           <span

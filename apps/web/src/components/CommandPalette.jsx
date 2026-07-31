@@ -46,7 +46,12 @@ export default function CommandPalette() {
       icon: "settings",
       path: projectId ? `/projects/${projectId}/settings` : "/projects",
     },
-    { id: "switch", label: "Switch Project Workspace", icon: "swap_horiz", path: "/projects" },
+    {
+      id: "switch",
+      label: "Switch Project Workspace",
+      icon: "swap_horiz",
+      path: "/projects",
+    },
   ];
 
   const filtered = actions.filter((a) =>
@@ -96,7 +101,9 @@ export default function CommandPalette() {
 
   useEffect(() => {
     if (open && listRef.current) {
-      const selected = listRef.current.querySelector(`[data-index="${selectedIndex}"]`);
+      const selected = listRef.current.querySelector(
+        `[data-index="${selectedIndex}"]`,
+      );
       if (selected) selected.scrollIntoView({ block: "nearest" });
     }
   }, [selectedIndex, open]);
@@ -106,12 +113,15 @@ export default function CommandPalette() {
   return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-background/80 backdrop-blur-sm p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setOpen(false);
+      }}
     >
       <div className="w-full max-w-xl level-1 rounded-DEFAULT border border-outline-variant shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-        {/* Input */}
         <div className="flex items-center px-4 py-3 border-b border-outline-variant bg-surface-container-lowest">
-          <span className="material-symbols-outlined text-on-surface-variant mr-3">search</span>
+          <span className="material-symbols-outlined text-on-surface-variant mr-3">
+            search
+          </span>
           <input
             type="text"
             className="w-full bg-transparent font-mono-code text-[14px] text-primary outline-none placeholder:text-outline"
@@ -126,8 +136,10 @@ export default function CommandPalette() {
           </kbd>
         </div>
 
-        {/* List */}
-        <div ref={listRef} className="max-h-80 overflow-y-auto p-2 space-y-1 divide-y divide-outline-variant/30">
+        <div
+          ref={listRef}
+          className="max-h-80 overflow-y-auto p-2 space-y-1 divide-y divide-outline-variant/30"
+        >
           {filtered.length ? (
             filtered.map((action, index) => (
               <button
@@ -141,7 +153,9 @@ export default function CommandPalette() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className={`material-symbols-outlined text-[18px] ${index === selectedIndex ? "text-primary" : "text-on-surface-variant group-hover:text-primary"}`}>
+                  <span
+                    className={`material-symbols-outlined text-[18px] ${index === selectedIndex ? "text-primary" : "text-on-surface-variant group-hover:text-primary"}`}
+                  >
                     {action.icon}
                   </span>
                   <span className="font-mono-label text-mono-label text-primary">
@@ -160,7 +174,6 @@ export default function CommandPalette() {
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-4 py-2 border-t border-outline-variant/40 bg-surface-container-low flex items-center justify-between font-mono-label text-[10px] text-on-surface-variant">
           <span>Navigation Shortcuts</span>
           <span>↑↓ navigate · ENTER select · ESC close</span>

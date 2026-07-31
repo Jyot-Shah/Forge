@@ -4,18 +4,16 @@ import {
   Memory,
   Message,
   SourceDocument,
+  Project,
 } from "@forge/persistence/models";
-import { Project } from "../models/project.model.js";
 import {
   embedText,
   generateText,
   getGemini,
-} from "../clients/gemini.client.js";
-import {
   DOCUMENT_COLLECTION,
   ensureDocumentCollection,
   getQdrant,
-} from "../clients/qdrant.client.js";
+} from "@forge/shared/clients";
 import { AppError } from "../errors/app-error.js";
 
 export async function listConversations(projectId, userId) {

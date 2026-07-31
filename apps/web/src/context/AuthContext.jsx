@@ -50,7 +50,6 @@ export function AuthProvider({ children }) {
     try {
       await api.post("/auth/logout");
     } catch {
-      // Ignore logout API failure
     } finally {
       setAccessToken(null);
       setUser(null);
