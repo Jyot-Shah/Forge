@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { writeFile, readFile, rm } from "node:fs/promises";
+import { mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import {
   DocumentChunk,
