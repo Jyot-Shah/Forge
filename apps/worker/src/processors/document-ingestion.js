@@ -1,5 +1,6 @@
 import path from "node:path";
 import { createHash } from "node:crypto";
+import mongoose from "mongoose";
 import {
   DocumentChunk,
   DocumentVersion,
@@ -42,8 +43,17 @@ export async function processDocumentIngestion({ documentId, versionId }) {
   version.ingestionStatus = "processing";
   await Promise.all([document.save(), version.save()]);
   try {
-    // Read text directly from MongoDB — zero filesystem dependency
-    let text = (version.rawContent || "")
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: "documents",
+    });
+
+    let rawText = "";
+    const downloadStream = bucket.openDownloadStream(version.gridFsId);
+    for await (const chunk of downloadStream) {
+      rawText += chunk.toString("utf8");
+    }
+
+    let text = rawText
       .replace(/\r\n/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
       .trim();

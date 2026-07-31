@@ -5,7 +5,7 @@ const schema = new mongoose.Schema(
     projectId: { type: mongoose.Schema.Types.ObjectId, required: true },
     versionNumber: { type: Number, required: true },
     contentHash: { type: String, required: true },
-    rawContent: { type: String },
+    gridFsId: { type: mongoose.Schema.Types.ObjectId, required: true },
     textLength: { type: Number, default: 0 },
     ingestionStatus: {
       type: String,

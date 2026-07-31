@@ -18,13 +18,31 @@ export function qdrant() {
     checkCompatibility: false,
   });
 }
-export async function ensureCollection(client) {
-  try {
-    await client.getCollection(COLLECTION);
-  } catch {
-    await client.createCollection(COLLECTION, {
-      vectors: { size: 1536, distance: "Cosine" },
-    });
+export async function ensureCollection(client, retries = 5) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      try {
+        await client.getCollection(COLLECTION);
+      } catch (err) {
+        if (err.status === 404) {
+          await client.createCollection(COLLECTION, {
+            vectors: { size: 1536, distance: "Cosine" },
+          });
+        } else {
+          throw err;
+        }
+      }
+      return; // Success
+    } catch (networkError) {
+      if (i === retries - 1) {
+        console.error(
+          "Qdrant ensureCollection final retry failed:",
+          networkError.message,
+        );
+        throw networkError;
+      }
+      await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
+    }
   }
 }
 function normalizeVector(values) {

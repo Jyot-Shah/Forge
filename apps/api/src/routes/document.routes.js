@@ -21,9 +21,9 @@ import os from "node:os";
 
 const router = Router({ mergeParams: true });
 
-// Convert entirely to RAM-based memory storage. Bypasses ALL filesystem read-only / EXDEV crashes on Render.
+// Uses fast ephemeral OS tmp space instead of RAM to prevent OOM
 const upload = multer({
-  storage: multer.memoryStorage(),
+  dest: os.tmpdir(),
   limits: { fileSize: environment.MAX_UPLOAD_BYTES, files: 1 },
 });
 router.get("/", authorizeProject(), async (req, res, next) => {

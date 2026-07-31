@@ -60,7 +60,8 @@ decisions, and contextual memories.
 
 - **Engine**: BullMQ queue processor running on Redis.
 - **Ingestion Pipeline**:
-  1. Reads uploaded source documents (`TXT`, `Markdown`, `JSON`, code files).
+  1. Streams uploaded source document binary chunks natively from MongoDB GridFS
+     (`TXT`, `Markdown`, `JSON`, code files).
   2. Normalizes text and executes deterministic chunking (token/character
      boundaries).
   3. Generates 768-dimensional vector embeddings using Google Gemini API

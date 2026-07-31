@@ -1,5 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import path from "node:path";
+import fs from "node:fs";
+import mongoose from "mongoose";
 import {
   DocumentChunk,
   DocumentVersion,
@@ -59,10 +61,31 @@ export async function createDocument(projectId, uploadedBy, file) {
 
   const storageKey = buildStorageKey(file.originalname);
 
-  // Read the raw text directly from the in-memory buffer (multer memoryStorage).
-  // Zero filesystem operations — everything stays in RAM and MongoDB.
-  const rawText = file.buffer.toString("utf8");
-  const contentHash = createHash("sha256").update(rawText).digest("hex");
+  // Compute file hash via stream to prevent OOM
+  const contentHash = await new Promise((resolve, reject) => {
+    const hash = createHash("sha256");
+    const stream = fs.createReadStream(file.path);
+    stream.on("error", reject);
+    stream.on("data", (chunk) => hash.update(chunk));
+    stream.on("end", () => resolve(hash.digest("hex")));
+  });
+
+  // Pipe directly to MongoDB GridFS bypassing API RAM completely
+  const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName: "documents",
+  });
+  const uploadStream = bucket.openUploadStream(storageKey);
+  const gridFsId = uploadStream.id;
+
+  await new Promise((resolve, reject) => {
+    fs.createReadStream(file.path)
+      .pipe(uploadStream)
+      .on("error", reject)
+      .on("finish", resolve);
+  });
+
+  // Cleanup tmp file silently
+  fs.promises.unlink(file.path).catch(console.error);
 
   const document = await SourceDocument.create({
     projectId,
@@ -79,7 +102,7 @@ export async function createDocument(projectId, uploadedBy, file) {
     projectId,
     versionNumber: 1,
     contentHash,
-    rawContent: rawText, // Persist the full file text in MongoDB Atlas
+    gridFsId,
   });
 
   document.latestVersionId = version.id;
