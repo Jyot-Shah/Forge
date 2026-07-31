@@ -37,4 +37,4 @@ yarn-error.log*
 *.swp
 .DS_Store
 
-production_deployment_guide.md
+docs_for_my_reference

@@ -49,15 +49,15 @@ ergonomics:
 ## Core System Capabilities
 
 - **Project-Scoped Document Ingestion**: Supports `.md`, `.txt`, `.json`, `.py`,
-  `.js`, `.ts` files with real-time lifecycle tracking.
+  `.js`, `.ts` files synchronously via **Zero-RAM MongoDB GridFS streaming**.
 - **Persistent Memory Graph Engine**: Factual extraction from document ingestion
   and developer chat interactions.
 - **Reciprocal Rank Fusion (RRF)**: Merges **MongoDB Lexical Search** and
   **Qdrant Vector Cosine Retrieval** ($k=60$).
 - **Grounded RAG Chat Core**: Context-aware pipeline powered by **Google Gemini
-  API** (`@google/genai`) with markdown & citation references.
+  API** (`@google/genai`) wrapped in resilient exponential-backoff loops.
 - **Asynchronous Worker Queue**: Redis-backed **BullMQ** job processor with
-  exponential backoff and job telemetry.
+  deterministic DNS-socket fallback bridging.
 
 ---
 
@@ -89,11 +89,12 @@ Forge Monorepo
 
 ### Backend API & Worker (`apps/api` & `apps/worker`)
 
-- Node.js v20+, Express v4.21
+- Node.js v20+, Express v4.21 (w/ Core TCP IPv4 Polyfills)
 - BullMQ v5.34, ioredis v5.4
-- MongoDB v7.0 (Mongoose v8.9), Qdrant Vector DB (`@qdrant/js-client-rest`
-  v1.13)
-- Google Gemini API (`@google/genai` v1.0)
+- MongoDB v7.0 (Mongoose v8.9 & GridFS Pipeline Streams), Qdrant Vector DB
+  (`@qdrant/js-client-rest` v1.13)
+- Google Gemini API (`@google/genai` v1.0) wrapped in native `node-fetch` socket
+  hooks
 - JWT (`jsonwebtoken` v9.0), BcryptJS v2.4, Zod v3.24, Helmet v8.0, Multer v2.0
 
 ---
