@@ -1,3 +1,5 @@
+import dns from "node:dns";
+dns.setDefaultResultOrder("ipv4first");
 import dotenv from "dotenv";
 import { fileURLToPath } from "node:url";
 import path from "node:path";

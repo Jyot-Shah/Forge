@@ -70,9 +70,10 @@ export async function processDocumentIngestion({ documentId, versionId }) {
     })
       .sort({ chunkIndex: 1 })
       .lean();
-    const embeddings = await Promise.all(
-      persisted.map((chunk) => embedDocument(chunk.content)),
-    );
+    const embeddings = [];
+    for (const chunk of persisted) {
+      embeddings.push(await embedDocument(chunk.content));
+    }
     await client.upsert(COLLECTION, {
       wait: true,
       points: persisted.map((chunk, index) => ({
