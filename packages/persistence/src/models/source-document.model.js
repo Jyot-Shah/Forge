@@ -19,6 +19,7 @@ const schema = new mongoose.Schema(
       index: true,
     },
     latestVersionId: mongoose.Schema.Types.ObjectId,
+    rawFilePayload: { type: Buffer, select: false },
     error: { type: String, maxlength: 500 },
     deletedAt: Date,
   },

@@ -330,12 +330,12 @@ export default function LandingPage() {
                         local_library
                       </span>
                       <h3 className="font-body-md text-body-md font-bold text-primary mb-2">
-                        Cloud-Native Knowledge Vault
+                        Immutable Library
                       </h3>
                       <p className="font-mono-code text-body-sm text-on-surface-variant max-w-md">
-                        Documents are ingested directly into cloud databases
-                        with zero local storage dependencies. Your knowledge
-                        base persists across deployments and scales infinitely.
+                        Content addressed storage for your critical technical
+                        assets. Guarantee that dependencies and specifications
+                        never drift over time.
                       </p>
                     </div>
                   </div>

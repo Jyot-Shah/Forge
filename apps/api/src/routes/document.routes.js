@@ -1,5 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   requireProjectEditor,
   authorizeProject,
@@ -15,6 +17,7 @@ import {
 import { logActivity } from "../services/activity.service.js";
 import { z } from "zod";
 import { environment } from "../config/environment.js";
+import os from "node:os";
 
 const router = Router({ mergeParams: true });
 

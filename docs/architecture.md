@@ -21,8 +21,7 @@ decisions, and contextual memories.
                └─────────┬──────────┬───────────┬────────┘
                          │          │           │
        MongoDB Atlas ◄───┘          │           └───► Redis / BullMQ
-   (Metadata, History &             |                (Ingestion Jobs)
-    Raw File Content)
+   (Metadata & History)             │                (Ingestion Jobs)
                                     │                       │
                                     ▼                       ▼
                            Google Gemini API      ┌──────────────────┐
@@ -60,24 +59,16 @@ decisions, and contextual memories.
 ### `apps/worker` (Asynchronous Job Processor)
 
 - **Engine**: BullMQ queue processor running on Redis.
-- **Runtime**: Requires Node.js 22 LTS (pinned in `package.json`) due to
-  `@qdrant/js-client-rest` incompatibility with Node.js 26's bundled `undici`.
 - **Ingestion Pipeline**:
-  1. Reads raw file content directly from MongoDB (`DocumentVersion.rawContent`)
-     — **zero filesystem operations**.
+  1. Reads uploaded source documents (`TXT`, `Markdown`, `JSON`, code files).
   2. Normalizes text and executes deterministic chunking (token/character
      boundaries).
-  3. Generates 1536-dimensional vector embeddings using Google Gemini API
-     (`gemini-embedding-2`).
+  3. Generates 768-dimensional vector embeddings using Google Gemini API
+     (`text-embedding-004`).
   4. Upserts vectors to Qdrant Cloud vector collections with strict `projectId`
      payload filters.
-  5. Updates document status in MongoDB from `pending` → `processing` → `ready`
-     / `failed`.
-
-> **Note**: The upload pipeline uses `multer.memoryStorage()` to receive files
-> entirely in RAM. The raw text content is persisted in MongoDB Atlas via
-> `DocumentVersion.rawContent`, making the system fully cloud-native with no
-> dependency on local or ephemeral disk storage.
+  5. Updates document status in MongoDB from `pending` -> `processing` ->
+     `ready` / `failed`.
 
 ### `packages/shared` (Shared Contracts & Utilities)
 
