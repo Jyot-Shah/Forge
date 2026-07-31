@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, rm } from "node:fs/promises";
+import { mkdir, readFile, copyFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -69,7 +69,11 @@ export async function createDocument(projectId, uploadedBy, file) {
   await mkdir(uploadRoot, { recursive: true });
 
   try {
-    await rename(file.path, storagePath);
+    // Rely exclusively on copy + rm instead of rename() to gracefully bypass 'EXDEV: cross-device link not permitted' fatals
+    // which frequently trigger on cloud platforms like Render when moving files even inside os.tmpdir() bounds.
+    await copyFile(file.path, storagePath);
+    await rm(file.path, { force: true });
+
     const rawText = await readFile(storagePath, "utf8");
     const contentHash = createHash("sha256").update(rawText).digest("hex");
     const document = await SourceDocument.create({
