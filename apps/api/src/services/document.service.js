@@ -166,10 +166,12 @@ export async function deleteDocument(projectId, documentId) {
       },
     });
   } catch (error) {
-    console.error(
-      "Vector cleanup failed; document is hidden and can be reconciled later.",
-      error,
-    );
+    if (error.status !== 404) {
+      console.error(
+        "Vector cleanup failed; document is hidden and can be reconciled later.",
+        error.message || error,
+      );
+    }
   }
 
   return document;
