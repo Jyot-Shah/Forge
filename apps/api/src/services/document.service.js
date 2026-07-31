@@ -11,10 +11,9 @@ import { DOCUMENT_COLLECTION, getQdrant } from "../clients/qdrant.client.js";
 import { AppError } from "../errors/app-error.js";
 import { enqueueDocumentIngestion } from "../queues/ingestion.queue.js";
 
-const uploadRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../../../../uploads",
-);
+import os from "node:os";
+
+const uploadRoot = path.join(os.tmpdir(), "forge-uploads-persist");
 
 function buildStorageKey(originalFilename) {
   return `${randomUUID()}-${originalFilename.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
