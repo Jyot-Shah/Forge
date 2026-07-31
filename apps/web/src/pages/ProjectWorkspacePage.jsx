@@ -214,78 +214,85 @@ export default function ProjectWorkspacePage() {
                       className="level-2 hover:bg-surface-container-high transition-colors flex items-center px-4 py-3 group"
                     >
                       {/* File Name */}
-                      <div className="w-1/2 flex items-center gap-3">
-                        <span className="material-symbols-outlined text-[16px] text-primary">
-                          text_snippet
-                        </span>
-                        {editingId === document._id ? (
-                          <div className="flex items-center gap-2 w-full max-w-xs">
-                            <input
-                              autoFocus
-                              type="text"
-                              value={editingName}
-                              onChange={(e) => setEditingName(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
+                      <div className="w-1/2 flex flex-col justify-center py-1">
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-[16px] text-primary">
+                            text_snippet
+                          </span>
+                          {editingId === document._id ? (
+                            <div className="flex items-center gap-2 w-full max-w-xs">
+                              <input
+                                autoFocus
+                                type="text"
+                                value={editingName}
+                                onChange={(e) => setEditingName(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    if (editingName.trim()) {
+                                      renameDocument.mutate({
+                                        documentId: document._id,
+                                        newName: editingName.trim(),
+                                      });
+                                    } else {
+                                      setEditingId(null);
+                                    }
+                                  } else if (e.key === "Escape") {
+                                    setEditingId(null);
+                                  }
+                                }}
+                                className="bg-surface-container border border-primary rounded-sm px-2 py-0.5 font-mono-code text-[12px] text-primary outline-none w-full"
+                              />
+                              <button
+                                disabled={renameDocument.isPending}
+                                onClick={() => {
                                   if (editingName.trim()) {
                                     renameDocument.mutate({
                                       documentId: document._id,
                                       newName: editingName.trim(),
                                     });
-                                  } else {
-                                    setEditingId(null);
                                   }
-                                } else if (e.key === "Escape") {
-                                  setEditingId(null);
-                                }
-                              }}
-                              className="bg-surface-container border border-primary rounded-sm px-2 py-0.5 font-mono-code text-[12px] text-primary outline-none w-full"
-                            />
-                            <button
-                              disabled={renameDocument.isPending}
-                              onClick={() => {
-                                if (editingName.trim()) {
-                                  renameDocument.mutate({
-                                    documentId: document._id,
-                                    newName: editingName.trim(),
-                                  });
-                                }
-                              }}
-                              className="text-success hover:bg-surface-container p-0.5 rounded"
-                            >
-                              <span className="material-symbols-outlined text-[14px]">
-                                check
-                              </span>
-                            </button>
-                            <button
-                              onClick={() => setEditingId(null)}
-                              className="text-error hover:bg-surface-container p-0.5 rounded"
-                            >
-                              <span className="material-symbols-outlined text-[14px]">
-                                close
-                              </span>
-                            </button>
+                                }}
+                                className="text-success hover:bg-surface-container p-0.5 rounded"
+                              >
+                                <span className="material-symbols-outlined text-[14px]">
+                                  check
+                                </span>
+                              </button>
+                              <button
+                                onClick={() => setEditingId(null)}
+                                className="text-error hover:bg-surface-container p-0.5 rounded"
+                              >
+                                <span className="material-symbols-outlined text-[14px]">
+                                  close
+                                </span>
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <Link
+                                to={`/projects/${projectId}/documents/${document._id}`}
+                                className="font-mono-code text-mono-code text-primary hover:underline truncate max-w-[calc(100%-40px)]"
+                              >
+                                {document.originalFilename}
+                              </Link>
+                              <button
+                                onClick={() => {
+                                  setEditingId(document._id);
+                                  setEditingName(document.originalFilename);
+                                }}
+                                className="text-tertiary hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <span className="material-symbols-outlined text-[14px]">
+                                  edit
+                                </span>
+                              </button>
+                            </>
+                          )}
+                        </div>
+                        {document.error && (
+                          <div className="text-error text-[11px] font-mono-code mt-1 ml-7 mr-4 whitespace-normal break-all">
+                            ERR: {document.error}
                           </div>
-                        ) : (
-                          <>
-                            <Link
-                              to={`/projects/${projectId}/documents/${document._id}`}
-                              className="font-mono-code text-mono-code text-primary hover:underline truncate max-w-[calc(100%-40px)]"
-                            >
-                              {document.originalFilename}
-                            </Link>
-                            <button
-                              onClick={() => {
-                                setEditingId(document._id);
-                                setEditingName(document.originalFilename);
-                              }}
-                              className="text-tertiary hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <span className="material-symbols-outlined text-[14px]">
-                                edit
-                              </span>
-                            </button>
-                          </>
                         )}
                       </div>
 
