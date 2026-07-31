@@ -158,19 +158,25 @@ export async function deleteDocument(projectId, documentId) {
     DocumentVersion.deleteMany({ documentId }),
   ]);
 
-  try {
-    await getQdrant().delete(DOCUMENT_COLLECTION, {
-      wait: true,
-      filter: {
-        must: [{ key: "documentId", match: { value: String(document.id) } }],
-      },
-    });
-  } catch (error) {
-    if (error.status !== 404) {
-      console.error(
-        "Vector cleanup failed; document is hidden and can be reconciled later.",
-        error.message || error,
-      );
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      await getQdrant().delete(DOCUMENT_COLLECTION, {
+        wait: true,
+        filter: {
+          must: [{ key: "documentId", match: { value: String(document.id) } }],
+        },
+      });
+      break; // Success
+    } catch (error) {
+      if (error.status === 404) break; // Already gone
+      if (attempt === 4) {
+        console.error(
+          "Vector cleanup final retry failed; document is hidden but orphaned.",
+          error.message || error,
+        );
+      } else {
+        await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, attempt)));
+      }
     }
   }
 

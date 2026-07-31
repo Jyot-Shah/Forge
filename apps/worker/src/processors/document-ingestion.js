@@ -74,19 +74,33 @@ export async function processDocumentIngestion({ documentId, versionId }) {
     for (const chunk of persisted) {
       embeddings.push(await embedDocument(chunk.content));
     }
-    await client.upsert(COLLECTION, {
-      wait: true,
-      points: persisted.map((chunk, index) => ({
-        id: toQdrantPointId(chunk._id),
-        vector: embeddings[index],
-        payload: {
-          projectId: document.projectId.toString(),
-          documentId: document.id,
-          chunkId: chunk._id.toString(),
-          status: "active",
-        },
-      })),
-    });
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        await client.upsert(COLLECTION, {
+          wait: true,
+          points: persisted.map((chunk, index) => ({
+            id: toQdrantPointId(chunk._id),
+            vector: embeddings[index],
+            payload: {
+              projectId: document.projectId.toString(),
+              documentId: document.id,
+              chunkId: chunk._id.toString(),
+              status: "active",
+            },
+          })),
+        });
+        break; // Sucesss
+      } catch (upsertError) {
+        if (attempt === 4) {
+          console.error(
+            "Qdrant upsert final retry failed:",
+            upsertError.message,
+          );
+          throw upsertError;
+        }
+        await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, attempt)));
+      }
+    }
     version.textLength = text.length;
     version.chunkCount = chunks.length;
     version.ingestionStatus = "ready";

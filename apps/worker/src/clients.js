@@ -32,17 +32,28 @@ function normalizeVector(values) {
   if (!magnitude) return values;
   return values.map((value) => value / magnitude);
 }
-export async function embedDocument(text) {
+export async function embedDocument(text, retries = 5) {
   const model = embeddingModel;
   const config = { outputDimensionality: EMBEDDING_DIMENSIONS };
   const contents = `Represent this project document for retrieval.\n\n${text}`;
-  const response = await gemini().models.embedContent({
-    model,
-    contents,
-    config,
-  });
-  const values = response.embeddings?.[0]?.values;
-  if (!values?.length)
-    throw new Error("Embedding response did not include vector values.");
-  return normalizeVector(values);
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await gemini().models.embedContent({
+        model,
+        contents,
+        config,
+      });
+      const values = response.embeddings?.[0]?.values;
+      if (!values?.length)
+        throw new Error("Embedding response did not include vector values.");
+      return normalizeVector(values);
+    } catch (error) {
+      if (i === retries - 1) {
+        console.error("Gemini Embedding final retry failed:", error.message);
+        throw error;
+      }
+      await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
+    }
+  }
 }
