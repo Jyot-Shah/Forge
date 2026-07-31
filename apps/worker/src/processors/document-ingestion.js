@@ -1,7 +1,5 @@
-import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
-import { fileURLToPath } from "node:url";
 import {
   DocumentChunk,
   DocumentVersion,
@@ -13,8 +11,6 @@ import {
   qdrant,
   COLLECTION,
 } from "../clients.js";
-
-const uploadRoot = path.join(process.cwd(), ".uploads/persist");
 
 function chunkText(text, size = 2400, overlap = 300) {
   const chunks = [];
@@ -46,9 +42,8 @@ export async function processDocumentIngestion({ documentId, versionId }) {
   version.ingestionStatus = "processing";
   await Promise.all([document.save(), version.save()]);
   try {
-    let text = (
-      await readFile(path.join(uploadRoot, document.storageKey), "utf8")
-    )
+    // Read text directly from MongoDB — zero filesystem dependency
+    let text = (version.rawContent || "")
       .replace(/\r\n/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
       .trim();

@@ -1,5 +1,4 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import {
   DocumentChunk,
@@ -7,9 +6,8 @@ import {
   SourceDocument,
 } from "@forge/persistence/models";
 import { DOCUMENT_COLLECTION, getQdrant } from "../clients/qdrant.client.js";
-import os from "node:os";
-
-const uploadRoot = os.tmpdir(); // Strictly rely on the ultimate top-level temp directory.
+import { AppError } from "../errors/app-error.js";
+import { enqueueDocumentIngestion } from "../queues/ingestion.queue.js";
 
 function buildStorageKey(originalFilename) {
   return `${randomUUID()}-${originalFilename.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
@@ -60,42 +58,39 @@ export async function createDocument(projectId, uploadedBy, file) {
   }
 
   const storageKey = buildStorageKey(file.originalname);
-  const storagePath = path.join(uploadRoot, storageKey);
 
-  await mkdir(uploadRoot, { recursive: true });
+  // Read the raw text directly from the in-memory buffer (multer memoryStorage).
+  // Zero filesystem operations — everything stays in RAM and MongoDB.
+  const rawText = file.buffer.toString("utf8");
+  const contentHash = createHash("sha256").update(rawText).digest("hex");
 
-  try {
-    // Write the raw buffer directly from memory into the root /tmp directory. Absolute stability.
-    await writeFile(storagePath, file.buffer);
+  const document = await SourceDocument.create({
+    projectId,
+    uploadedBy,
+    originalFilename: file.originalname,
+    storageKey,
+    mimeType: file.mimetype,
+    byteSize: file.size,
+    contentHash,
+  });
 
-    const rawText = await readFile(storagePath, "utf8");
-    const contentHash = createHash("sha256").update(rawText).digest("hex");
-    const document = await SourceDocument.create({
-      projectId,
-      uploadedBy,
-      originalFilename: file.originalname,
-      storageKey,
-      mimeType: file.mimetype,
-      byteSize: file.size,
-      contentHash,
-    });
-    const version = await DocumentVersion.create({
-      documentId: document.id,
-      projectId,
-      versionNumber: 1,
-      contentHash,
-    });
-    document.latestVersionId = version.id;
-    await document.save();
-    await enqueueDocumentIngestion({
-      documentId: document.id,
-      versionId: version.id,
-    });
-    return document;
-  } catch (error) {
-    await rm(storagePath, { force: true }).catch(() => {});
-    throw error;
-  }
+  const version = await DocumentVersion.create({
+    documentId: document.id,
+    projectId,
+    versionNumber: 1,
+    contentHash,
+    rawContent: rawText, // Persist the full file text in MongoDB Atlas
+  });
+
+  document.latestVersionId = version.id;
+  await document.save();
+
+  await enqueueDocumentIngestion({
+    documentId: document.id,
+    versionId: version.id,
+  });
+
+  return document;
 }
 
 export async function listDocuments(projectId) {
@@ -161,7 +156,6 @@ export async function deleteDocument(projectId, documentId) {
   await Promise.all([
     DocumentChunk.deleteMany({ documentId }),
     DocumentVersion.deleteMany({ documentId }),
-    rm(path.join(uploadRoot, document.storageKey), { force: true }),
   ]);
 
   try {
