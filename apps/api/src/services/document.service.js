@@ -7,6 +7,8 @@ import {
   SourceDocument,
 } from "@forge/persistence/models";
 import { DOCUMENT_COLLECTION, getQdrant } from "../clients/qdrant.client.js";
+import os from "node:os";
+
 const uploadRoot = os.tmpdir(); // Strictly rely on the ultimate top-level temp directory.
 
 function buildStorageKey(originalFilename) {
