@@ -1,4 +1,5 @@
 import "./dns-fix.js";
+import "./fetch-polyfill.js";
 import dotenv from "dotenv";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
