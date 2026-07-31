@@ -1,19 +1,13 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, copyFile, rm } from "node:fs/promises";
+import { writeFile, readFile, rm } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import {
   DocumentChunk,
   DocumentVersion,
   SourceDocument,
 } from "@forge/persistence/models";
 import { DOCUMENT_COLLECTION, getQdrant } from "../clients/qdrant.client.js";
-import { AppError } from "../errors/app-error.js";
-import { enqueueDocumentIngestion } from "../queues/ingestion.queue.js";
-
-import os from "node:os";
-
-const uploadRoot = path.join(process.cwd(), ".uploads/persist");
+const uploadRoot = os.tmpdir(); // Strictly rely on the ultimate top-level temp directory.
 
 function buildStorageKey(originalFilename) {
   return `${randomUUID()}-${originalFilename.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
@@ -69,10 +63,8 @@ export async function createDocument(projectId, uploadedBy, file) {
   await mkdir(uploadRoot, { recursive: true });
 
   try {
-    // Rely exclusively on copy + rm instead of rename() to gracefully bypass 'EXDEV: cross-device link not permitted' fatals
-    // which frequently trigger on cloud platforms like Render when moving files even inside os.tmpdir() bounds.
-    await copyFile(file.path, storagePath);
-    await rm(file.path, { force: true });
+    // Write the raw buffer directly from memory into the root /tmp directory. Absolute stability.
+    await writeFile(storagePath, file.buffer);
 
     const rawText = await readFile(storagePath, "utf8");
     const contentHash = createHash("sha256").update(rawText).digest("hex");
@@ -99,7 +91,6 @@ export async function createDocument(projectId, uploadedBy, file) {
     });
     return document;
   } catch (error) {
-    await rm(file.path, { force: true }).catch(() => {});
     await rm(storagePath, { force: true }).catch(() => {});
     throw error;
   }

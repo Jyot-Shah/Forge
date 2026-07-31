@@ -21,15 +21,9 @@ import os from "node:os";
 
 const router = Router({ mergeParams: true });
 
-// Cloud-agnostic ephemeral storage for document uploads
-const uploadTmpDir = path.join(process.cwd(), ".uploads/tmp");
-import fs from "node:fs";
-if (!fs.existsSync(uploadTmpDir)) {
-  fs.mkdirSync(uploadTmpDir, { recursive: true });
-}
-
+// Convert entirely to RAM-based memory storage. Bypasses ALL filesystem read-only / EXDEV crashes on Render.
 const upload = multer({
-  dest: uploadTmpDir,
+  storage: multer.memoryStorage(),
   limits: { fileSize: environment.MAX_UPLOAD_BYTES, files: 1 },
 });
 router.get("/", authorizeProject(), async (req, res, next) => {
