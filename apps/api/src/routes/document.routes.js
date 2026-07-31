@@ -17,11 +17,17 @@ import {
 import { logActivity } from "../services/activity.service.js";
 import { z } from "zod";
 import { environment } from "../config/environment.js";
+import os from "node:os";
+
 const router = Router({ mergeParams: true });
-const uploadTmpDir = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../../../../uploads/tmp",
-);
+
+// Cloud-agnostic ephemeral storage for document uploads
+const uploadTmpDir = path.join(os.tmpdir(), "forge-uploads-tmp");
+import fs from "node:fs";
+if (!fs.existsSync(uploadTmpDir)) {
+  fs.mkdirSync(uploadTmpDir, { recursive: true });
+}
+
 const upload = multer({
   dest: uploadTmpDir,
   limits: { fileSize: environment.MAX_UPLOAD_BYTES, files: 1 },
