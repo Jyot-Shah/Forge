@@ -1,5 +1,4 @@
-import dns from "node:dns";
-dns.setDefaultResultOrder("ipv4first");
+import "./dns-fix.js";
 import dotenv from "dotenv";
 import { fileURLToPath } from "node:url";
 import path from "node:path";

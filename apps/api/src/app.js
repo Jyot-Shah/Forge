@@ -23,6 +23,9 @@ export function createApp() {
   app.use(cors({ origin: environment.WEB_ORIGIN, credentials: true }));
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());
+  app.get("/", (_request, response) =>
+    response.json({ status: "Forge Engine Active", message: "API is online." }),
+  );
   app.get("/health", (_request, response) => response.json({ status: "ok" }));
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/projects", authenticate, projectRoutes);

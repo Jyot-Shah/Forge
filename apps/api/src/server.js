@@ -1,5 +1,4 @@
-import dns from "node:dns";
-dns.setDefaultResultOrder("ipv4first");
+import "./dns-fix.js";
 import { createApp } from "./app.js";
 import { connectDatabase, disconnectDatabase } from "./config/database.js";
 import { environment } from "./config/environment.js";
