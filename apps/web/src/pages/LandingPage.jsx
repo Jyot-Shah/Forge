@@ -368,7 +368,7 @@ export default function LandingPage() {
           </span>{" "}
           by{" "}
           <a
-            href="https://www.linkedin.com/in/jyotshah1/"
+            href="https://jyotshah.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"
