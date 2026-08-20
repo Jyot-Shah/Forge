@@ -29,6 +29,7 @@ export function createApp() {
     response.json({ status: "Forge Engine Active", message: "API is online." }),
   );
   app.get("/health", (_request, response) => response.json({ status: "ok" }));
+  app.get("/api/v1/health", (_request, response) => response.json({ status: "ok" }));
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/projects", authenticate, projectRoutes);
   app.use(

@@ -10,6 +10,24 @@ export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1",
   withCredentials: true,
 });
+
+export const pingBackend = () => {
+  try {
+    const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
+    const rootHealthUrl = rawUrl.replace(/\/api\/v1\/?$/, "") + "/health";
+    const apiHealthUrl = rawUrl.replace(/\/+$/, "") + "/health";
+
+    fetch(rootHealthUrl, { method: "GET" }).catch(() => {});
+    if (rootHealthUrl !== apiHealthUrl) {
+      fetch(apiHealthUrl, { method: "GET" }).catch(() => {});
+    }
+  } catch {
+    // Silently ignore ping errors
+  }
+};
+
+// Immediately fire a wake-up call on module initialization
+pingBackend();
 api.interceptors.request.use((config) => {
   if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
   return config;

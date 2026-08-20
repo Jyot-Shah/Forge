@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import ForgeLogo from "../components/ForgeLogo.jsx";
+import { pingBackend } from "../api/client.js";
 
 export default function LandingPage() {
   const navbarRef = useRef(null);
@@ -16,6 +17,7 @@ export default function LandingPage() {
   const [isIntroFinished, setIsIntroFinished] = useState(false);
 
   useEffect(() => {
+    pingBackend();
     document.body.classList.add("landing-page-intro");
 
     // Enforce 4s ambient intro
