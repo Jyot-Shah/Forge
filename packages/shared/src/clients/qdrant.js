@@ -14,17 +14,36 @@ export function getQdrant() {
 export async function ensureDocumentCollection(client, retries = 5) {
   for (let i = 0; i < retries; i++) {
     try {
+      let collectionInfo;
       try {
-        await client.getCollection(DOCUMENT_COLLECTION);
+        collectionInfo = await client.getCollection(DOCUMENT_COLLECTION);
       } catch (err) {
         if (err.status === 404) {
           await client.createCollection(DOCUMENT_COLLECTION, {
             vectors: { size: 1536, distance: "Cosine" },
           });
+          collectionInfo = await client.getCollection(DOCUMENT_COLLECTION);
         } else {
           throw err;
         }
       }
+
+      const requiredIndexes = ["projectId", "status", "documentId"];
+      const existingIndexes = collectionInfo?.payload_schema || {};
+      for (const field of requiredIndexes) {
+        if (!existingIndexes[field]) {
+          try {
+            await client.createPayloadIndex(DOCUMENT_COLLECTION, {
+              field_name: field,
+              field_schema: "keyword",
+              wait: true,
+            });
+          } catch {
+            // Silently ignore if already created or created concurrently
+          }
+        }
+      }
+
       return;
     } catch (error) {
       if (i === retries - 1) {

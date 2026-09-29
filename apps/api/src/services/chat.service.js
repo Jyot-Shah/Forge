@@ -124,7 +124,7 @@ export async function ask(projectId, userId, conversationId, content) {
         });
         break;
       } catch (searchError) {
-        if (attempt === 4) throw searchError;
+        if (searchError.status === 400 || attempt === 4) throw searchError;
         await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, attempt)));
       }
     }
